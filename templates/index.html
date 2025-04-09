@@ -1,366 +1,717 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light"> <!-- Theme attribute -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deva & Devi AI Assistant</title>
+    <title>Deva & Devi AI Assistant - Next Gen</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <style>
         :root {
-            --user-bubble-bg: #007bff; /* Blue for user */
-            --ai-bubble-bg: #e9e9eb;   /* Light gray for AI */
-            --text-color-user: white;
-            --text-color-ai: black;
-            --background-color: #f4f4f4;
-            --container-bg: #ffffff;
-            --border-color: #ccc;
-            --button-bg: #007bff;
-            --button-hover-bg: #0056b3;
-            --button-text: white;
+            /* Light Theme (Default) */
+            --bg-primary: #f8f9fa;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #e9ecef;
+            --text-primary: #212529;
+            --text-secondary: #6c757d;
+            --text-user: #ffffff;
+            --text-ai: #212529;
+            --accent-primary: #007bff;
+            --accent-primary-hover: #0056b3;
+            --accent-secondary: #6c757d;
+            --accent-secondary-hover: #5a6268;
+            --bubble-user-bg: linear-gradient(135deg, #007bff, #0056b3);
+            --bubble-ai-bg: #e9ecef;
+            --border-color: #dee2e6;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 10px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 8px 25px rgba(0, 0, 0, 0.15);
+            --success-bg: #d1e7dd; /* Slightly softer green */
+            --success-text: #0a3622;
+            --error-bg: #f8d7da;
+            --error-text: #721c24;
+            --info-bg: #cff4fc; /* Info color */
+            --info-text: #055160;
             --listening-bg: #dc3545;
-            --listening-shadow: rgba(220, 53, 69, 0.7);
-            --timestamp-color: #666;
-            --icon-color: #555;
-            --deva-bg: #e0f7fa; /* Light cyan/tech */
-            --devi-bg: #e8f5e9; /* Light green/nature */
+            --listening-shadow: rgba(220, 53, 69, 0.5);
+            --listening-border: rgba(220, 53, 69, 0.7);
+            --thinking-glow: rgba(0, 123, 255, 0.3);
+            --deva-bg: #e0f7fa;
+            --devi-bg: #e8f5e9;
+            --glass-bg: rgba(255, 255, 255, 0.6); /* For potential glassmorphism */
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --backdrop-blur: blur(8px);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2c2c2c;
+            --bg-tertiary: #3a3a3a;
+            --text-primary: #e0e0e0;
+            --text-secondary: #a0a0a0;
+            --text-user: #ffffff;
+            --text-ai: #e0e0e0;
+            --accent-primary: #0d6efd; /* Slightly brighter blue for dark */
+            --accent-primary-hover: #3b82f6;
+            --accent-secondary: #adb5bd;
+            --accent-secondary-hover: #ced4da;
+            --bubble-user-bg: linear-gradient(135deg, #0d6efd, #3b82f6);
+            --bubble-ai-bg: #3a3a3a;
+            --border-color: #4a4a4a;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
+            --shadow-md: 0 4px 10px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 8px 25px rgba(0, 0, 0, 0.4);
+            --success-bg: #0a3622;
+            --success-text: #d1e7dd;
+            --error-bg: #721c24;
+            --error-text: #f8d7da;
+            --info-bg: #055160;
+            --info-text: #cff4fc;
+            --listening-shadow: rgba(255, 80, 99, 0.6);
+            --listening-border: rgba(255, 80, 99, 0.8);
+            --thinking-glow: rgba(13, 110, 253, 0.4);
+            --deva-bg: #1d3c45; /* Darker cyan */
+            --devi-bg: #2e4031; /* Darker green */
+            --glass-bg: rgba(44, 44, 44, 0.6);
+            --glass-border: rgba(74, 74, 74, 0.3);
         }
 
         /* Basic Reset & Body */
         * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            display: flex; /* Needed for landing screen centering */
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            background-color: var(--background-color);
-            color: var(--text-color-ai);
-            overflow: hidden; /* Prevent body scroll */
+            min-height: 100vh;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            overflow: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         /* 1. Landing / Character Selection Screen */
         #selection-screen {
-            display: flex; /* Initially shown */
+            display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent overlay */
+            background-color: rgba(0, 0, 0, 0.85);
+            backdrop-filter: var(--backdrop-blur);
             z-index: 100;
             padding: 20px;
-            backdrop-filter: blur(5px);
+            opacity: 1;
+            transition: opacity 0.5s ease-out;
         }
+        #selection-screen.hidden { opacity: 0; pointer-events: none; }
+
         #selection-screen h1 {
             color: white;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
+            font-weight: 600;
             text-align: center;
         }
-        .selection-container {
-            display: flex;
-            gap: 30px;
-            flex-wrap: wrap; /* Allow wrapping on smaller screens */
-            justify-content: center;
-        }
+        .selection-container { display: flex; gap: 40px; flex-wrap: wrap; justify-content: center; }
         .character-card {
-            background-color: var(--container-bg);
-            padding: 30px 40px;
-            border-radius: 15px;
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: 35px 45px;
+            border-radius: 20px;
             text-align: center;
             cursor: pointer;
             transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            min-width: 180px;
+            box-shadow: var(--shadow-md);
+            min-width: 200px;
         }
         .character-card:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            transform: translateY(-5px) scale(1.03);
+            box-shadow: var(--shadow-lg);
         }
-        .character-card .icon {
-            font-size: 4rem;
-            margin-bottom: 15px;
-        }
-        .character-card h2 {
-            font-size: 1.5rem;
-            margin-bottom: 5px;
-        }
+        .character-card .icon { font-size: 4.5rem; margin-bottom: 15px; } /* Keep emoji for selection */
+        .character-card h2 { font-size: 1.6rem; font-weight: 500; margin-bottom: 5px; }
 
-        /* 2. Main App Layout (Hidden Initially) */
+        /* 2. Main App Layout */
         #app-container {
             display: none; /* Initially hidden */
             width: 100%;
-            height: 100%;
-            max-width: 1200px; /* Max width for larger screens */
+            height: 100vh; /* Full viewport height */
+            max-width: 1400px;
             margin: 0 auto;
-            background-color: var(--container-bg);
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-            border-radius: 8px; /* Optional rounded corners */
+            background-color: var(--bg-secondary);
+            box-shadow: var(--shadow-lg);
+            border-radius: 12px;
             display: flex;
-            flex-direction: row; /* Default layout */
-            overflow: hidden; /* Contain children */
+            flex-direction: row;
+            overflow: hidden;
+            opacity: 0; /* Start hidden for fade-in */
+            transition: opacity 0.5s ease-in;
+            position: relative; /* Needed for absolute positioning of help icon */
         }
+        #app-container.visible { opacity: 1; }
 
         /* 3. Character Panel (Left) */
         #character-area {
-            flex: 0 0 300px; /* Fixed width, don't grow or shrink */
-            background-color: #f0f0f0; /* Placeholder background */
+            flex: 0 0 320px;
+            background-color: var(--bg-tertiary);
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: space-between; /* Push controls down */
-            padding: 20px;
+            justify-content: space-between;
+            padding: 25px;
             border-right: 1px solid var(--border-color);
-            position: relative; /* For potential overlays */
-            transition: background-color 0.5s ease; /* Smooth bg change */
+            position: relative;
+            transition: background-color 0.5s ease, box-shadow 0.3s ease;
         }
         #character-area.deva-bg { background-color: var(--deva-bg); }
         #character-area.devi-bg { background-color: var(--devi-bg); }
+        #character-area.is-thinking {
+             box-shadow: 0 0 20px 5px var(--thinking-glow); /* Subtle glow when thinking */
+        }
 
         #character-model-area {
             width: 100%;
-            height: 70%; /* Adjust as needed */
+            height: 65%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5em;
-            color: var(--icon-color);
-            /* Placeholder text/icon */
+            font-size: 6em; /* Adjust size for icon */
+            color: var(--text-secondary);
+            position: relative; /* For potential avatar overlay */
+            transition: transform 0.5s ease, opacity 0.5s ease;
         }
-        #character-model-area::before {
-             content: '👤'; /* Default placeholder */
+        /* Thinking animation for the icon */
+        #character-area.is-thinking #character-model-area i {
+            animation: thinking-pulse 1.5s infinite ease-in-out;
         }
-        #character-area.deva-bg #character-model-area::before { content: '👦'; }
-        #character-area.devi-bg #character-model-area::before { content: '👧'; }
+        @keyframes thinking-pulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; }
+        }
+
+        /* Placeholder for Voice Visualization */
+        #voice-visualization {
+            position: absolute;
+            bottom: 100px; /* Position below controls */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 4px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        #voice-visualization.active { opacity: 0.7; }
+        #voice-visualization span {
+            width: 5px;
+            height: 5px;
+            background-color: var(--accent-primary);
+            border-radius: 50%;
+            display: inline-block;
+            animation: voice-wave 1.2s infinite ease-in-out;
+        }
+        #voice-visualization span:nth-child(2) { animation-delay: 0.1s; }
+        #voice-visualization span:nth-child(3) { animation-delay: 0.2s; }
+        #voice-visualization span:nth-child(4) { animation-delay: 0.3s; }
+        #voice-visualization span:nth-child(5) { animation-delay: 0.4s; }
+
+        @keyframes voice-wave {
+            0%, 100% { transform: scaleY(1); }
+            50% { transform: scaleY(3); }
+        }
+        /* End Voice Viz Placeholder */
+
 
         #character-controls {
             display: flex;
-            gap: 10px;
-            margin-top: auto; /* Push to bottom */
+            gap: 12px;
+            margin-top: auto;
+            width: 100%;
+            justify-content: center;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+            flex-wrap: wrap; /* Allow buttons to wrap on smaller screens if needed */
         }
         .control-button {
-            background: none;
-            border: 1px solid var(--icon-color);
-            color: var(--icon-color);
+            background-color: transparent;
+            border: 1px solid var(--accent-secondary);
+            color: var(--accent-secondary);
             border-radius: 50%;
-            width: 35px;
-            height: 35px;
-            font-size: 1.1em;
+            width: 40px;
+            height: 40px;
+            font-size: 1.1em; /* Adjusted for Font Awesome */
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background-color 0.2s, color 0.2s;
+            transition: all 0.2s ease;
+            position: relative; /* For tooltips */
+            flex-shrink: 0; /* Prevent shrinking */
         }
         .control-button:hover {
-            background-color: var(--icon-color);
-            color: var(--container-bg);
+            background-color: var(--accent-secondary);
+            color: var(--bg-secondary);
+            border-color: var(--accent-secondary);
+            transform: scale(1.05); /* Slightly subtler hover */
         }
+         .control-button:active {
+             transform: scale(0.95); /* Click feedback */
+         }
         .control-button.active {
-             background-color: var(--button-bg);
-             color: var(--button-text);
-             border-color: var(--button-bg);
+             background-color: var(--accent-primary);
+             color: var(--text-user);
+             border-color: var(--accent-primary);
         }
-
+        .control-button.active:hover {
+             background-color: var(--accent-primary-hover);
+             border-color: var(--accent-primary-hover);
+             transform: scale(1.05);
+        }
 
         /* 4. Chat Panel (Center) */
         #chat-container {
-            flex-grow: 1; /* Takes up remaining space */
+            flex-grow: 1;
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* Prevent content overflow */
-            background-color: var(--background-color); /* Match body */
+            overflow: hidden;
+            background-color: var(--bg-primary);
         }
 
         #chatbox {
             flex-grow: 1;
-            padding: 20px 15px;
-            overflow-y: auto; /* Enable scrolling */
+            padding: 25px 20px;
+            overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 10px; /* Space between messages */
+            gap: 15px; /* Increased gap */
         }
+        /* Custom Scrollbar */
+        #chatbox::-webkit-scrollbar { width: 8px; }
+        #chatbox::-webkit-scrollbar-track { background: var(--bg-tertiary); border-radius: 4px; }
+        #chatbox::-webkit-scrollbar-thumb { background: var(--accent-secondary); border-radius: 4px; }
+        #chatbox::-webkit-scrollbar-thumb:hover { background: var(--accent-secondary-hover); }
 
         /* Chat Bubbles */
         .message {
-            padding: 10px 15px;
-            border-radius: 18px;
-            max-width: 75%;
+            padding: 12px 18px;
+            border-radius: 20px;
+            max-width: 70%;
             word-wrap: break-word;
             position: relative;
-            opacity: 0; /* Start hidden for animation */
-            transform: translateY(10px); /* Start slightly lower */
-            animation: fadeInSlideUp 0.3s ease-out forwards;
+            opacity: 0;
+            transform: translateY(15px);
+            animation: fadeInSlideUp 0.4s ease-out forwards;
+            box-shadow: var(--shadow-sm);
+            line-height: 1.5;
         }
         @keyframes fadeInSlideUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .message .timestamp {
-            font-size: 0.7em;
-            color: var(--timestamp-color);
-            display: block;
-            margin-top: 5px;
-            text-align: right; /* Align timestamp right */
+        .message-meta {
+            font-size: 0.75em;
+            color: var(--text-secondary);
+            display: flex; /* Use flex for timestamp and status */
+            justify-content: flex-end;
+            align-items: center;
+            gap: 5px;
+            margin-top: 8px;
+            opacity: 0.8;
+        }
+        .message-status { /* Placeholder for Sent/Seen */
+            font-size: 0.9em;
+            /* Add icons or text later */
         }
 
         .user-message {
-            background-color: var(--user-bubble-bg);
-            color: var(--text-color-user);
+            background: var(--bubble-user-bg);
+            color: var(--text-user);
             align-self: flex-end;
-            border-bottom-right-radius: 5px;
+            border-bottom-right-radius: 6px;
         }
-        .user-message .timestamp { color: rgba(255, 255, 255, 0.7); }
+        .user-message .message-meta { color: rgba(255, 255, 255, 0.8); }
 
         .ai-message {
-            background-color: var(--ai-bubble-bg);
-            color: var(--text-color-ai);
+            background-color: var(--bubble-ai-bg);
+            color: var(--text-ai);
             align-self: flex-start;
-            border-bottom-left-radius: 5px;
+            border-bottom-left-radius: 6px;
         }
-        .ai-message .timestamp { color: var(--timestamp-color); }
+        .ai-message .message-meta { color: var(--text-secondary); }
 
-        /* AI Message Controls (Play/Interrupt) */
+        /* AI Message Controls */
         .ai-controls {
             display: flex;
-            gap: 8px;
-            margin-top: 8px;
-            padding-top: 5px;
+            gap: 10px;
+            margin-top: 10px;
+            padding-top: 8px;
             border-top: 1px solid rgba(0,0,0,0.05); /* Subtle separator */
+            [data-theme="dark"] & { border-top-color: rgba(255,255,255,0.1); }
         }
         .ai-control-button {
-            background: none;
-            border: none;
-            color: var(--icon-color);
-            cursor: pointer;
-            font-size: 0.9em;
-            padding: 2px;
-            opacity: 0.7;
-            transition: opacity 0.2s;
+            background: none; border: none;
+            color: var(--accent-secondary);
+            cursor: pointer; font-size: 1em; /* Slightly larger for icons */
+            padding: 3px; opacity: 0.7;
+            transition: opacity 0.2s, color 0.2s;
+            display: flex; align-items: center; gap: 4px; /* Gap between icon and text */
         }
-        .ai-control-button:hover { opacity: 1; }
-        .interrupt-button { display: none; } /* Hide interrupt initially */
-        .ai-message.is-speaking .interrupt-button { display: inline-block; } /* Show when speaking */
+        .ai-control-button span { font-size: 0.85em; } /* Smaller text */
+        .ai-control-button:hover { opacity: 1; color: var(--accent-primary); }
+        .interrupt-button { display: none; }
+        .ai-message.is-speaking .interrupt-button { display: inline-flex; }
+        .ai-message.is-speaking .play-button { opacity: 0.5; pointer-events: none; } /* Dim play when speaking */
 
 
         /* 5. Input Panel (Bottom) */
+        #input-container { /* Added container for transcript */
+             padding: 15px 20px;
+             border-top: 1px solid var(--border-color);
+             background-color: var(--bg-secondary);
+        }
+        #interim-transcript { /* Real-time ASR display */
+            font-size: 0.9em;
+            color: var(--text-secondary);
+            min-height: 1.2em; /* Reserve space */
+            margin-bottom: 5px;
+            font-style: italic;
+            opacity: 0.7;
+        }
         #input-area {
             display: flex;
-            padding: 15px;
-            border-top: 1px solid var(--border-color);
-            background-color: var(--container-bg);
             align-items: center;
             gap: 10px;
         }
 
         #userInput {
             flex-grow: 1;
-            padding: 10px 15px;
+            padding: 12px 18px;
             border: 1px solid var(--border-color);
-            border-radius: 20px; /* Rounded input */
+            border-radius: 25px; /* Pill shape */
             margin-right: 5px;
             font-size: 1em;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
-        #userInput:focus { outline: none; border-color: var(--button-bg); }
+        #userInput:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+            [data-theme="dark"] & { box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.3); }
+        }
 
         #sendButton, #voiceButton {
-            padding: 10px;
-            width: 45px; /* Square-ish */
-            height: 45px;
-            background-color: var(--button-bg);
-            color: var(--button-text);
-            border: none;
-            border-radius: 50%; /* Circular buttons */
-            cursor: pointer;
-            font-size: 1.4em;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background-color 0.2s;
-            flex-shrink: 0; /* Prevent shrinking */
+            padding: 0; /* Remove padding, use flex align */
+            width: 48px; height: 48px;
+            background-color: var(--accent-primary);
+            color: var(--text-user);
+            border: none; border-radius: 50%;
+            cursor: pointer; font-size: 1.4em; /* Adjusted for FA icons */
+            display: flex; align-items: center; justify-content: center;
+            transition: background-color 0.2s, transform 0.1s ease-out, box-shadow 0.3s ease; /* Added box-shadow transition */
+            flex-shrink: 0;
+            box-shadow: none; /* Base state */
         }
-        #sendButton:hover, #voiceButton:hover { background-color: var(--button-hover-bg); }
+        #sendButton:hover, #voiceButton:hover { background-color: var(--accent-primary-hover); }
+        #sendButton:active, #voiceButton:active { transform: scale(0.95); }
 
         #voiceButton.is-listening {
              background-color: var(--listening-bg);
              animation: pulse 1.5s infinite;
+             /* Add border pulse */
+             box-shadow: 0 0 0 0 var(--listening-border);
+             animation: pulse 1.5s infinite, border-pulse 1.5s infinite ease-out;
         }
-        @keyframes pulse {
+        /* Mic icon managed by JS now */
+
+        @keyframes pulse { /* Background color pulse */
             0% { box-shadow: 0 0 0 0 var(--listening-shadow); }
-            70% { box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
+            70% { box-shadow: 0 0 0 12px rgba(220, 53, 69, 0); }
             100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
         }
+        @keyframes border-pulse { /* Border pulse */
+             0% { box-shadow: 0 0 0 0px var(--listening-border); }
+             100% { box-shadow: 0 0 0 5px rgba(220, 53, 69, 0); }
+        }
+
 
         /* Loading Indicator */
         #loading-indicator {
             display: none; /* Hidden by default */
-            margin: 10px auto; /* Center in chatbox if needed */
-            font-style: italic;
-            color: var(--timestamp-color);
-            /* Basic dots animation */
-            text-align: center;
+            align-self: flex-start; /* Align with AI messages */
+            margin: 10px 0;
+            padding: 8px 15px;
+            background-color: var(--bubble-ai-bg);
+            border-radius: 15px;
+            border-bottom-left-radius: 5px;
+            box-shadow: var(--shadow-sm);
         }
          #loading-indicator span {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            background-color: var(--icon-color);
-            border-radius: 50%;
-            margin: 0 2px;
+            display: inline-block; width: 8px; height: 8px;
+            background-color: var(--accent-secondary);
+            border-radius: 50%; margin: 0 2px;
             animation: bounce 1.4s infinite ease-in-out both;
         }
         #loading-indicator span:nth-child(1) { animation-delay: -0.32s; }
         #loading-indicator span:nth-child(2) { animation-delay: -0.16s; }
         @keyframes bounce {
-            0%, 80%, 100% { transform: scale(0); }
-            40% { transform: scale(1.0); }
+            0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1.0); }
+        }
+
+        /* Settings & Help Panel (Modal) Common Styles */
+        .modal-panel {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: var(--backdrop-blur);
+            z-index: 200;
+            display: none; /* Hidden by default */
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .modal-panel.visible { display: flex; opacity: 1; }
+
+        .modal-content {
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: 30px 40px;
+            border-radius: 15px;
+            box-shadow: var(--shadow-lg);
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+            transform: scale(0.95) translateY(10px); /* Start slightly down */
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            opacity: 0; /* Start hidden for transition */
+        }
+        .modal-panel.visible .modal-content {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+
+        .modal-content h2 {
+            margin-bottom: 25px;
+            font-weight: 600;
+            text-align: center;
+            color: var(--text-primary);
+        }
+        .modal-close-button {
+            position: absolute;
+            top: 15px; right: 15px;
+            background: none; border: none;
+            font-size: 1.5em; /* Adjusted for FA */
+            color: var(--text-secondary);
+            cursor: pointer; line-height: 1;
+            transition: color 0.2s, transform 0.2s;
+            padding: 5px; /* Easier to click */
+        }
+        .modal-close-button:hover {
+            color: var(--text-primary);
+            transform: scale(1.1);
+        }
+
+        /* Settings Specific */
+        .setting-item { margin-bottom: 20px; }
+        .setting-item label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            font-size: 0.9em;
+        }
+        .setting-item input[type="range"],
+        .setting-item select,
+        .setting-item .toggle-switch { /* Style inputs/selects */
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 1em;
+        }
+         .setting-item input[type="range"] { padding: 0; height: 8px; cursor: pointer; } /* Slider specific */
+         .setting-item select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%236c757d'%3E%3Cpath fill-rule='evenodd' d='M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z' clip-rule='evenodd' /%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; background-size: 16px; }
+         [data-theme="dark"] .setting-item select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23a0a0a0'%3E%3Cpath fill-rule='evenodd' d='M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z' clip-rule='evenodd' /%3E%3C/svg%3E"); }
+
+        /* Basic Toggle Switch */
+        .toggle-switch { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; }
+        .toggle-switch span { font-weight: normal; }
+        .switch { position: relative; display: inline-block; width: 44px; height: 24px; flex-shrink: 0; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--border-color); transition: .4s; border-radius: 24px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--accent-primary); }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        /* Help Modal Specific */
+        #help-modal .modal-content p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+            color: var(--text-secondary);
+        }
+        #help-modal .modal-content ul {
+            list-style: none; /* Remove default bullets */
+            padding-left: 0;
+            margin-bottom: 15px;
+        }
+        #help-modal .modal-content li {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: flex-start; /* Align icon with first line */
+            color: var(--text-secondary);
+        }
+        #help-modal .modal-content li i {
+            color: var(--accent-primary);
+            margin-right: 12px;
+            margin-top: 4px; /* Align icon nicely */
+            width: 1.2em; /* Ensure consistent icon width */
+            text-align: center;
+        }
+        #help-modal .modal-content strong {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+
+        /* Toast Notifications */
+        #toast-container {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 300;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            width: 90%;
+            max-width: 400px; /* Limit toast width */
+        }
+        .toast {
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            box-shadow: var(--shadow-md);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .toast i { font-size: 1.2em; } /* Icon size in toast */
+        .toast.show { opacity: 1; transform: translateY(0); }
+        .toast.error { background-color: var(--error-bg); color: var(--error-text); }
+        .toast.success { background-color: var(--success-bg); color: var(--success-text); }
+        .toast.info { background-color: var(--info-bg); color: var(--info-text); }
+
+
+        /* Help Icon - Moved to Top Left */
+        #help-icon {
+            position: absolute; /* Position relative to #app-container */
+            top: 15px; /* Adjust as needed */
+            left: 15px; /* Adjust as needed */
+            width: 35px; height: 35px; /* Slightly smaller */
+            background-color: var(--accent-secondary);
+            color: var(--bg-secondary);
+            border: none; border-radius: 50%;
+            font-size: 1.2em; /* Adjusted for FA */
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: var(--shadow-md);
+            transition: background-color 0.2s, transform 0.2s;
+            z-index: 150; /* Above chat, below modal */
+        }
+        #help-icon:hover {
+            background-color: var(--accent-secondary-hover);
+            transform: scale(1.1);
         }
 
 
         /* 6. Responsiveness */
-        @media (max-width: 768px) {
+        @media (max-width: 992px) { /* Tablet */
+             #character-area { flex: 0 0 250px; }
+             #character-model-area { font-size: 5em; }
+             .message { max-width: 75%; }
+             #character-controls { gap: 8px; } /* Reduce gap slightly */
+             #help-icon { top: 10px; left: 10px; } /* Adjust for smaller screens */
+        }
+
+        @media (max-width: 768px) { /* Mobile */
+            body { height: auto; min-height: 100vh; } /* Allow body scroll on mobile if needed */
             #app-container {
-                flex-direction: column; /* Stack panels vertically */
-                height: 100%; /* Ensure it takes full viewport height */
+                flex-direction: column;
+                height: 100vh; /* Full viewport height */
+                max-height: none; /* Remove max-height */
                 border-radius: 0;
+                max-width: 100%;
             }
             #character-area {
-                flex: 0 0 150px; /* Reduce height */
+                flex: 0 0 auto; /* Let it size by content */
+                min-height: 100px; /* Reduced min height */
                 border-right: none;
                 border-bottom: 1px solid var(--border-color);
-                padding: 10px;
-                flex-direction: row; /* Character and controls side-by-side */
-                justify-content: space-around; /* Space out elements */
+                padding: 10px 15px; /* Reduced padding */
+                flex-direction: row;
+                justify-content: space-between; /* Space out avatar and controls */
+                align-items: center;
             }
             #character-model-area {
-                height: 100%;
+                height: auto;
                 width: auto;
-                flex-grow: 1; /* Take available space */
                 font-size: 3em; /* Adjust icon size */
+                flex-grow: 0; /* Don't grow */
             }
+             #voice-visualization { display: none; } /* Hide viz on small screens for simplicity */
              #character-controls {
                  margin-top: 0;
-                 flex-direction: column; /* Stack controls vertically */
-                 gap: 5px;
+                 flex-direction: row; /* Keep controls horizontal */
+                 gap: 6px; /* Further reduce gap for mobile */
+                 width: auto; /* Don't take full width */
+                 border-top: none; padding-top: 0;
+                 flex-wrap: nowrap; /* Prevent wrapping on mobile controls */
+                 overflow-x: auto; /* Allow scrolling if needed, though unlikely with few buttons */
              }
-             .control-button { width: 30px; height: 30px; font-size: 1em; }
+             .control-button { width: 32px; height: 32px; font-size: 1em; } /* Smaller buttons */
 
             #chat-container {
                 flex-grow: 1; /* Take remaining height */
+                height: 0; /* Allow flex grow to work */
             }
-            #chatbox { padding: 10px; }
-            .message { max-width: 85%; }
-            #input-area { padding: 10px; }
-            #userInput { padding: 8px 12px; }
-            #sendButton, #voiceButton { width: 40px; height: 40px; font-size: 1.2em; }
+            #chatbox { padding: 15px 10px; gap: 12px; }
+            .message { max-width: 85%; padding: 10px 15px; }
+            #input-container { padding: 10px 15px; }
+            #userInput { padding: 10px 15px; font-size: 0.95em; }
+            #sendButton, #voiceButton { width: 42px; height: 42px; font-size: 1.3em; } /* Slightly smaller input buttons */
 
-            /* Hide selection text on small screens if needed */
-            .character-card h2 { font-size: 1.2rem; }
-            .character-card .icon { font-size: 3rem; }
-            .character-card { padding: 20px; min-width: 140px; }
-            .selection-container { gap: 15px; }
+            .character-card { padding: 25px; min-width: 150px; }
+            .selection-container { gap: 20px; }
+            #help-icon {
+                top: auto; /* Reset top */
+                bottom: 70px; /* Back to bottom on mobile */
+                left: auto; /* Reset left */
+                right: 15px; /* Position bottom-right on mobile */
+                width: 35px; height: 35px; font-size: 1.3em;
+            }
+            .modal-content { width: 95%; padding: 25px; }
+            #toast-container { width: 95%; bottom: 10px; }
         }
 
     </style>
@@ -369,14 +720,14 @@
 
     <!-- 1. Landing / Character Selection Screen -->
     <div id="selection-screen">
-        <h1>Choose your Assistant</h1>
+        <h1>Choose your AI Assistant</h1>
         <div class="selection-container">
             <div class="character-card" data-character="deva">
-                <div class="icon">👦</div>
+                <div class="icon">👦</div> <!-- Keep emoji here -->
                 <h2>Deva</h2>
             </div>
             <div class="character-card" data-character="devi">
-                <div class="icon">👧</div>
+                <div class="icon">👧</div> <!-- Keep emoji here -->
                 <h2>Devi</h2>
             </div>
         </div>
@@ -385,18 +736,43 @@
     <!-- 2. Main App Container (Initially Hidden) -->
     <div id="app-container">
 
+        <!-- Help Icon - Moved -->
+        <button id="help-icon" title="Help & Tips">
+            <i class="fa-solid fa-question"></i>
+        </button>
+
         <!-- 3. Character Panel (Left) -->
         <div id="character-area">
             <div id="character-model-area">
-                <!-- 3D Model will be loaded here by Three.js -->
-                <!-- Placeholder text/icon set by CSS -->
+                <!-- Icon will be set by JS -->
+                <i class="fa-solid fa-user"></i>
             </div>
+            <!-- Voice Visualization Placeholder -->
+            <div id="voice-visualization">
+                <span></span><span></span><span></span><span></span><span></span>
+            </div>
+            <!-- MODIFIED character-controls with Font Awesome -->
             <div id="character-controls">
-                 <button id="switchCharButton" class="control-button" title="Switch Character">🔄</button>
-                 <button id="muteButton" class="control-button" title="Mute/Unmute">🔈</button>
-                 <button id="clearChatButton" class="control-button" title="Clear Chat">🧹</button>
-                 <!-- Add more controls like dark mode toggle if needed -->
+                 <button id="switchCharButton" class="control-button" title="Switch Character">
+                     <i class="fa-solid fa-arrows-rotate"></i>
+                 </button>
+                 <button id="themeToggleButton" class="control-button" title="Toggle Theme">
+                     <i class="fa-solid fa-circle-half-stroke"></i> <!-- Auto icon, JS will set moon/sun -->
+                 </button>
+                 <button id="settingsButton" class="control-button" title="Settings">
+                     <i class="fa-solid fa-gear"></i>
+                 </button>
+                 <button id="muteButton" class="control-button" title="Mute/Unmute All Audio">
+                     <i class="fa-solid fa-volume-high"></i> <!-- JS toggles fa-volume-xmark -->
+                 </button>
+                 <button id="voiceOutputToggleButton" class="control-button active" title="Disable AI Voice Output">
+                     <i class="fa-solid fa-comment-dots"></i> <!-- JS toggles fa-comment-slash -->
+                 </button>
+                 <button id="clearChatButton" class="control-button" title="Clear Chat">
+                     <i class="fa-solid fa-broom"></i>
+                 </button>
             </div>
+            <!-- END OF MODIFIED character-controls -->
         </div>
 
         <!-- 4. Chat Panel (Center) -->
@@ -410,14 +786,104 @@
             </div>
 
             <!-- 5. Input Panel (Bottom) -->
-            <div id="input-area">
-                <input type="text" id="userInput" placeholder="Type or click the mic...">
-                <button id="sendButton" title="Send Message">➤</button>
-                <button id="voiceButton" title="Start/Stop Listening">🎤</button>
+            <div id="input-container">
+                <div id="interim-transcript"></div> <!-- Real-time ASR -->
+                <div id="input-area">
+                    <input type="text" id="userInput" placeholder="Type or click the mic...">
+                    <button id="sendButton" title="Send Message">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                    <button id="voiceButton" title="Start/Stop Listening">
+                        <i id="micIcon" class="fa-solid fa-microphone"></i> <!-- JS toggles fa-stop -->
+                    </button>
+                </div>
             </div>
         </div>
 
     </div>
+
+    <!-- Settings Panel (Modal) -->
+    <div id="settings-panel" class="modal-panel">
+        <div class="modal-content">
+            <button id="settingsCloseButton" class="modal-close-button" title="Close Settings">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h2>Settings</h2>
+            <!-- Settings items remain the same -->
+            <div class="setting-item">
+                <label for="volumeSlider">Volume</label>
+                <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="1">
+            </div>
+            <div class="setting-item">
+                <label for="rateSlider">Speaking Rate</label>
+                <input type="range" id="rateSlider" min="0.5" max="2" step="0.1" value="1">
+            </div>
+            <div class="setting-item">
+                <label for="languageSelect">Language / Accent</label>
+                <select id="languageSelect">
+                    <option value="en-IN">English (India)</option>
+                    <option value="en-US">English (US)</option>
+                    <option value="en-GB">English (UK)</option>
+                </select>
+            </div>
+            <div class="setting-item">
+                <label for="personaSelect">Assistant Persona</label>
+                <select id="personaSelect">
+                    <option value="friendly">Friendly</option>
+                    <option value="professional">Professional</option>
+                    <option value="funny">Funny</option>
+                </select>
+            </div>
+             <div class="setting-item">
+                <label for="voiceSelect">Assistant Voice (Requires Advanced TTS)</label>
+                <select id="voiceSelect" disabled> <!-- Disable for now as gTTS doesn't support this well -->
+                    <option value="default-male">Default Male (Deva)</option>
+                    <option value="default-female">Default Female (Devi)</option>
+                    <option value="alt-male-1">Alternative Male 1</option>
+                    <option value="alt-female-1">Alternative Female 1</option>
+                </select>
+            </div>
+            <div class="setting-item">
+                 <div class="toggle-switch">
+                     <span>Enable Subtitles (Show AI text during speech)</span>
+                     <label class="switch">
+                         <input type="checkbox" id="subtitleToggle">
+                         <span class="slider"></span>
+                     </label>
+                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="help-modal" class="modal-panel">
+        <div class="modal-content">
+            <button id="helpCloseButton" class="modal-close-button" title="Close Help">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h2><i class="fa-solid fa-circle-info" style="margin-right: 8px; color: var(--accent-primary);"></i>Help & Tips</h2>
+            <p>Interact with your AI assistant using voice or text.</p>
+            <ul>
+                <li><i class="fa-solid fa-microphone"></i>Click the <strong>Microphone</strong> button to start speaking. Click again (or wait for silence) to stop.</li>
+                <li><i class="fa-solid fa-keyboard"></i>Type your message in the input box and press <strong>Enter</strong> or click the <strong>Send</strong> (<i class="fa-solid fa-paper-plane"></i>) button.</li>
+                <li><i class="fa-solid fa-gear"></i>Use the <strong>Settings</strong> button to adjust volume, speaking rate, language, and persona.</li>
+                <li><i class="fa-solid fa-comment-dots"></i>Toggle the <strong>AI Voice Output</strong> button (<i class="fa-solid fa-comment-dots"></i> / <i class="fa-solid fa-comment-slash"></i>) to enable/disable spoken responses.</li>
+                <li><i class="fa-solid fa-volume-high"></i>Use the <strong>Mute</strong> button (<i class="fa-solid fa-volume-high"></i> / <i class="fa-solid fa-volume-xmark"></i>) to silence all audio.</li>
+                <li><i class="fa-solid fa-arrows-rotate"></i>Click <strong>Switch Character</strong> to go back and choose Deva or Devi.</li>
+                <li><i class="fa-solid fa-broom"></i>Click <strong>Clear Chat</strong> to erase the current conversation.</li>
+                <li><i class="fa-solid fa-circle-half-stroke"></i>Use the <strong>Theme</strong> button to cycle between Light, Dark, and Auto modes.</li>
+            </ul>
+             <p><strong>Example Prompts:</strong></p>
+             <ul>
+                <li><i class="fa-solid fa-cloud-sun"></i>"What's the weather like in London?"</li>
+                <li><i class="fa-solid fa-lightbulb"></i>"Tell me a fun fact."</li>
+                <li><i class="fa-solid fa-atom"></i>"Explain quantum physics simply."</li>
+             </ul>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container"></div>
 
     <script>
         // --- DOM Elements ---
@@ -425,155 +891,387 @@
         const appContainer = document.getElementById('app-container');
         const characterCards = document.querySelectorAll('.character-card');
         const characterArea = document.getElementById('character-area');
-        // const characterModelArea = document.getElementById('character-model-area'); // For Three.js later
+        const characterModelArea = document.getElementById('character-model-area');
+        const voiceVisualization = document.getElementById('voice-visualization');
         const chatbox = document.getElementById('chatbox');
         const userInput = document.getElementById('userInput');
         const sendButton = document.getElementById('sendButton');
         const voiceButton = document.getElementById('voiceButton');
+        const micIcon = document.getElementById('micIcon'); // Specific icon element
+        const interimTranscript = document.getElementById('interim-transcript');
         const switchCharButton = document.getElementById('switchCharButton');
         const muteButton = document.getElementById('muteButton');
         const clearChatButton = document.getElementById('clearChatButton');
         const loadingIndicator = document.getElementById('loading-indicator');
+        const themeToggleButton = document.getElementById('themeToggleButton');
+        const settingsButton = document.getElementById('settingsButton');
+        const settingsPanel = document.getElementById('settings-panel');
+        const settingsCloseButton = document.getElementById('settingsCloseButton');
+        const toastContainer = document.getElementById('toast-container');
+        const helpIcon = document.getElementById('help-icon');
+        const voiceOutputToggleButton = document.getElementById('voiceOutputToggleButton');
+        const helpModal = document.getElementById('help-modal');
+        const helpCloseButton = document.getElementById('helpCloseButton');
+
+        // Settings Elements
+        const volumeSlider = document.getElementById('volumeSlider');
+        const rateSlider = document.getElementById('rateSlider');
+        const languageSelect = document.getElementById('languageSelect');
+        const personaSelect = document.getElementById('personaSelect');
+        const voiceSelect = document.getElementById('voiceSelect');
+        const subtitleToggle = document.getElementById('subtitleToggle');
+
 
         // --- State Variables ---
-        let selectedCharacter = null; // 'deva' or 'devi'
-        let isMuted = false;
-        let currentAudio = null; // Holds the currently playing Audio object
-        let currentInterruptButton = null; // Holds the interrupt button of the playing audio
-        let conversationHistory = []; // Optional: Client-side history mirror
+        let selectedCharacter = localStorage.getItem('selectedCharacter') || null;
+        let isMuted = localStorage.getItem('isMuted') === 'true';
+        let isVoiceOutputEnabled = localStorage.getItem('voiceOutputEnabled') !== 'false'; // Default true
+        let currentAudio = null;
+        let currentInterruptButton = null;
+        let conversationHistory = []; // Client-side mirror (optional)
+        let currentTheme = localStorage.getItem('theme') || 'auto'; // 'light', 'dark', 'auto'
 
-        // --- Speech Recognition Setup (Keep previous logic) ---
+        // --- Speech Recognition Setup ---
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         let recognition;
         let isListening = false;
 
         if (SpeechRecognition) {
             recognition = new SpeechRecognition();
-            recognition.continuous = false;
-            recognition.lang = 'en-IN';
-            recognition.interimResults = false;
+            recognition.continuous = false; // Stop when user pauses
+            recognition.lang = localStorage.getItem('language') || 'en-IN'; // Use saved lang
+            recognition.interimResults = true; // Enable for real-time display
             recognition.maxAlternatives = 1;
 
             recognition.onstart = () => {
                 isListening = true;
                 voiceButton.classList.add('is-listening');
-                voiceButton.textContent = '👂';
+                micIcon.classList.remove('fa-microphone');
+                micIcon.classList.add('fa-stop'); // Change icon to stop
+                voiceVisualization.classList.add('active'); // Show voice viz
+                interimTranscript.textContent = 'Listening...';
                 console.log('Voice recognition started...');
             };
+
             recognition.onresult = (event) => {
-                userInput.value = event.results[0][0].transcript;
-                // Maybe automatically send after short pause? For now, user clicks send.
+                console.log("Speech recognition result received"); // Debug log
+                let interim = '';
+                let final = '';
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    if (event.results[i].isFinal) {
+                        final += event.results[i][0].transcript;
+                    } else {
+                        interim += event.results[i][0].transcript;
+                    }
+                }
+                interimTranscript.textContent = interim || '...'; // Show interim
+                if (final) {
+                    console.log("Final transcript:", final); // Debug log
+                    userInput.value = final;
+                    interimTranscript.textContent = ''; // Clear interim on final
+                    sendMessage(); // <-- Auto-send on final result (Core of voice-to-voice)
+                }
             };
+
             recognition.onerror = (event) => {
-                console.error('Speech recognition error:', event.error);
+                console.error('Speech recognition error:', event.error, event.message); // Log message too
                 let errorMsg = 'Speech recognition error: ' + event.error;
-                 if (event.error === 'no-speech') errorMsg = "Didn't hear anything.";
-                 else if (event.error === 'audio-capture') errorMsg = "Mic problem.";
-                 else if (event.error === 'not-allowed') errorMsg = "Mic permission denied.";
-                addMessage(errorMsg, 'system-error'); // Use a different style for system errors
+                 if (event.error === 'no-speech') errorMsg = "Didn't hear anything. Please try again.";
+                 else if (event.error === 'audio-capture') errorMsg = "Microphone problem. Check connection/permissions.";
+                 else if (event.error === 'not-allowed') errorMsg = "Microphone permission denied. Please allow access in browser settings.";
+                 else if (event.error === 'network') errorMsg = "Network error during speech recognition.";
+                showToast(errorMsg, 'error', 5000); // Longer duration for errors
+                // Ensure UI resets if an error occurs mid-listening
+                if (isListening) {
+                    recognition.abort(); // Stop recognition process
+                    isListening = false;
+                    voiceButton.classList.remove('is-listening');
+                    micIcon.classList.remove('fa-stop');
+                    micIcon.classList.add('fa-microphone');
+                    voiceVisualization.classList.remove('active');
+                    interimTranscript.textContent = '';
+                }
             };
+
             recognition.onend = () => {
+                // This runs naturally when speech stops or when .stop() or .abort() is called
                 isListening = false;
                 voiceButton.classList.remove('is-listening');
-                voiceButton.textContent = '🎤';
+                micIcon.classList.remove('fa-stop');
+                micIcon.classList.add('fa-microphone'); // Reset icon
+                voiceVisualization.classList.remove('active'); // Hide voice viz
+                interimTranscript.textContent = ''; // Clear any leftover interim text
                 console.log('Voice recognition ended.');
             };
         } else {
             console.warn('Speech Recognition not supported.');
             voiceButton.disabled = true;
-            voiceButton.textContent = '🚫';
+            voiceButton.title = 'Speech Recognition not supported';
+            micIcon.classList.remove('fa-microphone');
+            micIcon.classList.add('fa-microphone-slash'); // Indicate disabled mic
+            showToast('Speech Recognition is not supported in your browser.', 'info');
+        }
+
+        // --- Theme Management ---
+        function applyTheme(theme) {
+            const html = document.documentElement;
+            const themeIcon = themeToggleButton.querySelector('i');
+            if (theme === 'auto') {
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                html.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+                // Keep the auto icon, but update title
+                themeIcon.className = 'fa-solid fa-circle-half-stroke';
+                themeToggleButton.title = `Toggle Theme (Auto: ${prefersDark ? 'Dark' : 'Light'})`;
+            } else {
+                html.setAttribute('data-theme', theme);
+                themeIcon.className = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon'; // Sun for dark, Moon for light
+                themeToggleButton.title = `Toggle Theme (Current: ${theme})`;
+            }
+        }
+
+        function cycleTheme() {
+            const html = document.documentElement;
+            // Determine the next theme in the cycle: light -> dark -> auto -> light
+            if (currentTheme === 'light') {
+                currentTheme = 'dark';
+            } else if (currentTheme === 'dark') {
+                currentTheme = 'auto';
+            } else { // currentTheme was 'auto'
+                currentTheme = 'light';
+            }
+            localStorage.setItem('theme', currentTheme);
+            applyTheme(currentTheme); // Apply and update icon/title
+            showToast(`Theme set to ${currentTheme === 'auto' ? 'Auto Detect' : currentTheme}`, 'info', 1500);
+        }
+
+        // Apply initial theme on load
+        applyTheme(currentTheme);
+
+        // --- Settings Management ---
+        function loadSettings() {
+            volumeSlider.value = localStorage.getItem('volume') || 1;
+            rateSlider.value = localStorage.getItem('rate') || 1;
+            languageSelect.value = localStorage.getItem('language') || 'en-IN';
+            personaSelect.value = localStorage.getItem('persona') || 'friendly';
+            // voiceSelect.value = localStorage.getItem('voice') || (selectedCharacter === 'deva' ? 'default-male' : 'default-female'); // Keep disabled for now
+            subtitleToggle.checked = localStorage.getItem('subtitles') === 'true';
+
+            // Apply initial mute state from storage
+            muteButton.classList.toggle('active', isMuted);
+            muteButton.querySelector('i').className = isMuted ? 'fa-solid fa-volume-xmark' : 'fa-solid fa-volume-high';
+            muteButton.title = isMuted ? 'Unmute All Audio' : 'Mute All Audio';
+
+            // Apply initial AI voice output state
+            voiceOutputToggleButton.classList.toggle('active', isVoiceOutputEnabled);
+            voiceOutputToggleButton.querySelector('i').className = isVoiceOutputEnabled ? 'fa-solid fa-comment-dots' : 'fa-solid fa-comment-slash';
+            voiceOutputToggleButton.title = isVoiceOutputEnabled ? 'Disable AI Voice Output' : 'Enable AI Voice Output';
+
+            // Update recognition language if changed
+            if (recognition) {
+                recognition.lang = languageSelect.value;
+                console.log("Recognition language set to:", recognition.lang);
+            }
+        }
+
+        function saveSettings() {
+            localStorage.setItem('volume', volumeSlider.value);
+            localStorage.setItem('rate', rateSlider.value);
+            localStorage.setItem('language', languageSelect.value);
+            localStorage.setItem('persona', personaSelect.value);
+            // localStorage.setItem('voice', voiceSelect.value); // Keep disabled
+            localStorage.setItem('subtitles', subtitleToggle.checked);
+
+            // Update recognition language immediately
+            if (recognition) {
+                recognition.lang = languageSelect.value;
+                console.log("Recognition language updated to:", recognition.lang);
+            }
+            // Note: Applying volume/rate requires integration with audio playback
+            showToast('Settings saved!', 'success', 1500);
+        }
+
+        function openSettings() {
+            loadSettings(); // Load current settings when opening
+            settingsPanel.classList.add('visible');
+        }
+
+        function closeSettings() {
+            saveSettings(); // Save settings when closing
+            settingsPanel.classList.remove('visible');
+        }
+
+        // --- Help Modal ---
+        function openHelp() {
+            helpModal.classList.add('visible');
+        }
+        function closeHelp() {
+            helpModal.classList.remove('visible');
+        }
+
+        // --- Toast Notifications ---
+        function showToast(message, type = 'info', duration = 3000) {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+
+            // Add icon based on type
+            let iconClass = 'fa-solid fa-circle-info'; // Default info
+            if (type === 'success') iconClass = 'fa-solid fa-check-circle';
+            if (type === 'error') iconClass = 'fa-solid fa-triangle-exclamation';
+
+            toast.innerHTML = `<i class="${iconClass}"></i><span>${message}</span>`; // Add icon and message
+            toastContainer.appendChild(toast);
+
+            // Trigger reflow to enable animation
+            toast.offsetHeight;
+
+            toast.classList.add('show');
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+                // Remove the element after the transition completes
+                toast.addEventListener('transitionend', () => toast.remove(), { once: true }); // Use once: true
+            }, duration);
+        }
+
+        // --- Onboarding ---
+        function checkOnboarding() {
+            if (!localStorage.getItem('hasOnboarded')) {
+                setTimeout(() => {
+                     showToast("Welcome! Click the (?) icon for tips.", "info", 6000);
+                     // Simple highlight for help icon
+                     helpIcon.style.boxShadow = '0 0 0 4px var(--accent-primary)';
+                     setTimeout(() => {
+                         helpIcon.style.boxShadow = ''; // Remove highlight
+                         localStorage.setItem('hasOnboarded', 'true');
+                     }, 3000);
+                }, 1500); // Delay after app loads
+            }
         }
 
         // --- Initialization ---
         function initializeApp(character) {
             selectedCharacter = character;
+            localStorage.setItem('selectedCharacter', character); // Remember choice
             console.log(`Character selected: ${selectedCharacter}`);
 
-            // Update UI based on character
+            // Update UI
             characterArea.classList.remove('deva-bg', 'devi-bg');
             characterArea.classList.add(character === 'deva' ? 'deva-bg' : 'devi-bg');
-            // TODO: Load actual 3D model via Three.js here based on character
+            // Set character icon
+            characterModelArea.querySelector('i').className = character === 'deva' ? 'fa-solid fa-robot' : 'fa-solid fa-face-smile'; // Example icons
 
-            // Hide selection, show app
-            selectionScreen.style.display = 'none';
-            appContainer.style.display = 'flex';
+            // Hide selection, show app with fade-in
+            selectionScreen.classList.add('hidden'); // Start fade out
+            setTimeout(() => {
+                selectionScreen.style.display = 'none'; // Hide after fade
+                appContainer.style.display = 'flex';
+                // Trigger reflow before adding 'visible' class for transition
+                appContainer.offsetHeight;
+                appContainer.classList.add('visible');
+            }, 500); // Match CSS transition duration
 
-            // Add initial greeting
-            const greeting = `Hi! I'm ${character.charAt(0).toUpperCase() + character.slice(1)}. How can I help you today, Sir?`;
-            addMessage(greeting, 'ai', null); // No audio for initial greeting
+            // Clear previous chat & add greeting
+            clearChatVisuals(false); // Don't show confirmation
+            const greeting = `Hi! I'm ${character.charAt(0).toUpperCase() + character.slice(1)}. How can I help you today?`;
+            addMessage(greeting, 'ai', null, true); // Add greeting without animation initially
 
-            // Clear any previous chat history visually (and potentially on backend if needed)
-            clearChatVisuals();
-            // TODO: Inform backend to start new session or clear history if necessary
+            loadSettings(); // Load settings relevant to the character
+            checkOnboarding(); // Check if first time user
         }
 
         // --- Add Message Function (Enhanced) ---
-        function addMessage(text, sender, audioBase64 = null) {
+        function addMessage(text, sender, audioBase64 = null, skipAnimation = false) {
             const messageDiv = document.createElement('div');
             messageDiv.classList.add('message', `${sender}-message`);
+            if (skipAnimation) {
+                messageDiv.style.opacity = 1;
+                messageDiv.style.transform = 'translateY(0)';
+                messageDiv.style.animation = 'none';
+            }
 
             const contentDiv = document.createElement('div');
             contentDiv.textContent = text;
             messageDiv.appendChild(contentDiv);
 
-            // Timestamp
+            // Meta container (Timestamp + Status)
+            const metaDiv = document.createElement('div');
+            metaDiv.classList.add('message-meta');
+
             const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             const timestampSpan = document.createElement('span');
             timestampSpan.classList.add('timestamp');
             timestampSpan.textContent = timestamp;
-            messageDiv.appendChild(timestampSpan);
+            metaDiv.appendChild(timestampSpan);
 
-            // AI Controls (Play/Interrupt)
+            // Status placeholder (e.g., for user messages)
+            if (sender === 'user') {
+                const statusSpan = document.createElement('span');
+                statusSpan.classList.add('message-status');
+                // statusSpan.innerHTML = '<i class="fa-solid fa-check"></i>'; // Sent (use fa-check-double for Seen)
+                metaDiv.appendChild(statusSpan);
+            }
+            messageDiv.appendChild(metaDiv);
+
+
+            // AI Controls (Play/Interrupt) - Using Font Awesome
             if (sender === 'ai' && audioBase64) {
                 messageDiv.dataset.audio = audioBase64; // Store audio data
 
                 const controlsDiv = document.createElement('div');
                 controlsDiv.classList.add('ai-controls');
 
-                // Play Button
                 const playButton = document.createElement('button');
                 playButton.classList.add('ai-control-button', 'play-button');
-                playButton.textContent = '🔊 Play'; // Use icon later: '▶️' or SVG
+                playButton.innerHTML = '<i class="fa-solid fa-play"></i><span>Play</span>';
                 playButton.title = 'Play audio again';
-                playButton.onclick = () => {
-                    stopCurrentAudio(); // Stop any other audio first
+                playButton.onclick = (e) => {
+                    e.stopPropagation();
+                    stopCurrentAudio();
                     playAudio(audioBase64, messageDiv);
                 };
                 controlsDiv.appendChild(playButton);
 
-                // Interrupt Button (initially hidden by CSS)
                 const interruptBtn = document.createElement('button');
                 interruptBtn.classList.add('ai-control-button', 'interrupt-button');
-                interruptBtn.textContent = '⏹️ Stop'; // Use icon later
+                interruptBtn.innerHTML = '<i class="fa-solid fa-stop"></i><span>Stop</span>';
                 interruptBtn.title = 'Interrupt speech';
-                interruptBtn.onclick = () => {
+                interruptBtn.onclick = (e) => {
+                    e.stopPropagation();
                     stopCurrentAudio();
-                    // TODO: Add "Clarification Mode" logic if needed
                     console.log("Audio interrupted by user.");
                 };
                 controlsDiv.appendChild(interruptBtn);
 
                 messageDiv.appendChild(controlsDiv);
             } else if (sender === 'system-error') {
-                 messageDiv.style.backgroundColor = '#f8d7da'; // Error styling
-                 messageDiv.style.color = '#721c24';
-                 messageDiv.style.alignSelf = 'center'; // Center system messages
-                 messageDiv.style.maxWidth = '90%';
+                 showToast(text, 'error');
+                 return null; // Don't add to chatbox
+            }
+
+            // Remove loading indicator before adding new message
+            const existingLoader = chatbox.querySelector('#loading-indicator');
+            if (existingLoader && sender === 'ai') {
+                 existingLoader.remove();
             }
 
             chatbox.appendChild(messageDiv);
-            // Scroll to bottom (wait for animation frame for accuracy)
-            requestAnimationFrame(() => {
-                 chatbox.scrollTop = chatbox.scrollHeight;
-            });
+            // Scroll to bottom smoothly
+            chatbox.scrollTo({ top: chatbox.scrollHeight, behavior: 'smooth' });
 
             // Optional: Add to client-side history mirror
-            conversationHistory.push({ role: sender, content: text, timestamp: new Date() });
+            // conversationHistory.push({ role: sender, content: text, timestamp: new Date() });
+
+            return messageDiv; // Return the element for potential use (like playing audio)
         }
 
         // --- Audio Playback ---
         function playAudio(base64Audio, messageElement) {
-            if (!base64Audio || isMuted) return;
+            // Check voice output toggle, mute status, and if audio data exists
+            if (!isVoiceOutputEnabled || !base64Audio || isMuted) {
+                console.log(`Audio playback skipped. VoiceOutputEnabled: ${isVoiceOutputEnabled}, HasAudio: ${!!base64Audio}, IsMuted: ${isMuted}`);
+                return;
+            }
+            console.log("Attempting to play audio..."); // Debug log
 
             stopCurrentAudio(); // Ensure only one audio plays
 
@@ -583,44 +1281,52 @@
                 currentAudio = audio; // Store reference
                 currentInterruptButton = messageElement.querySelector('.interrupt-button');
 
+                // Apply settings
+                audio.volume = parseFloat(localStorage.getItem('volume') || 1);
+                audio.playbackRate = parseFloat(localStorage.getItem('rate') || 1);
+
                 audio.onplay = () => {
+                    console.log("Audio playback started."); // Debug log
                     messageElement.classList.add('is-speaking');
+                    voiceVisualization.classList.add('active'); // Show viz when AI speaks
                 };
                 audio.onended = () => {
+                    console.log("Audio playback finished."); // Debug log
                     stopCurrentAudio(); // Clean up state
                 };
                 audio.onerror = (e) => {
                     console.error("Error playing audio:", e);
-                    addMessage("Error playing audio.", 'system-error');
-                    stopCurrentAudio(); // Clean up state
+                    showToast("Error playing audio.", 'error');
+                    stopCurrentAudio();
                 };
 
                 audio.play().catch(e => {
-                    console.error("Audio play failed:", e);
-                    // Often due to browser restrictions on autoplay
+                    console.error("Audio play() failed:", e); // Debug log
                     if (e.name === 'NotAllowedError') {
-                         addMessage("(Browser blocked audio autoplay. Click Play to listen)", 'system-error');
+                         showToast("Browser blocked audio autoplay. Click Play or interact first.", 'info', 4000);
                     } else {
-                         addMessage("Could not play audio.", 'system-error');
+                         showToast("Could not play audio.", 'error');
                     }
-                    stopCurrentAudio(); // Clean up state
+                    stopCurrentAudio();
                 });
 
             } catch (e) {
                 console.error("Error creating audio object:", e);
-                addMessage("Failed to process audio.", 'system-error');
-                stopCurrentAudio(); // Clean up state
+                showToast("Failed to process audio data.", 'error');
+                stopCurrentAudio();
             }
         }
 
         // --- Stop Current Audio ---
         function stopCurrentAudio() {
             if (currentAudio) {
+                console.log("Stopping current audio playback."); // Debug log
                 currentAudio.pause();
-                currentAudio.currentTime = 0; // Reset playback position
+                currentAudio.currentTime = 0;
                 const speakingMessage = document.querySelector('.ai-message.is-speaking');
                 if(speakingMessage) speakingMessage.classList.remove('is-speaking');
             }
+            voiceVisualization.classList.remove('active'); // Hide viz
             currentAudio = null;
             currentInterruptButton = null;
         }
@@ -630,67 +1336,106 @@
             const userText = userInput.value.trim();
             if (!userText) return;
 
+            console.log("Sending message:", userText); // Debug log
             stopCurrentAudio(); // Stop AI if it's talking
             addMessage(userText, 'user');
             userInput.value = '';
-            loadingIndicator.style.display = 'block'; // Show thinking indicator
-            chatbox.scrollTop = chatbox.scrollHeight; // Scroll down to show indicator
+
+            // Show thinking indicator
+            chatbox.appendChild(loadingIndicator); // Add it back
+            loadingIndicator.style.display = 'flex';
+            characterArea.classList.add('is-thinking'); // Add glow to character panel
+            chatbox.scrollTo({ top: chatbox.scrollHeight, behavior: 'smooth' });
 
             try {
-                const response = await fetch('/chat', { // Ensure this matches your Flask route
+                // Prepare data, including settings
+                const requestData = {
+                    query: userText,
+                    character: selectedCharacter,
+                    settings: {
+                        language: localStorage.getItem('language') || 'en-IN',
+                        persona: localStorage.getItem('persona') || 'friendly',
+                        // voice: localStorage.getItem('voice') || (selectedCharacter === 'deva' ? 'default-male' : 'default-female') // Keep disabled
+                    },
+                };
+                console.log("Sending to /chat:", requestData); // Debug log
+
+                const response = await fetch('/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    // Send character info if backend needs it for voice/personality
-                    body: JSON.stringify({ query: userText, character: selectedCharacter }),
+                    body: JSON.stringify(requestData),
                 });
 
-                loadingIndicator.style.display = 'none'; // Hide thinking indicator
+                // Hide thinking indicator immediately
+                loadingIndicator.style.display = 'none';
+                characterArea.classList.remove('is-thinking');
 
                 if (!response.ok) {
-                    let errorMsg = `Error: ${response.statusText}`;
+                    let errorMsg = `Server error: ${response.statusText} (${response.status})`;
                     try {
                         const errorData = await response.json();
                         errorMsg = errorData.response || errorData.error || errorMsg;
-                    } catch (e) { /* Ignore */ }
-                    addMessage(errorMsg, 'system-error');
-                    console.error('Error sending message:', errorMsg);
+                    } catch (e) { /* Ignore if response is not JSON */ }
+                    showToast(errorMsg, 'error', 5000);
+                    console.error('Error response from /chat:', response.status, errorMsg); // Debug log
                     return;
                 }
 
                 const data = await response.json();
+                console.log("Received from /chat:", data); // Debug log
                 const aiText = data.response;
-                const audioData = data.audio_content;
+                const audioData = data.audio_content; // Expecting base64 audio string
 
                 // Add AI response message
                 const aiMessageElement = addMessage(aiText, 'ai', audioData);
 
-                // Play AI's voice response if not muted
-                if (!isMuted && audioData) {
-                     // Find the message element just added to pass to playAudio
-                     const lastMessage = chatbox.lastElementChild;
-                     if (lastMessage && lastMessage.classList.contains('ai-message')) {
-                         playAudio(audioData, lastMessage);
-                     }
+                // Play AI's voice response (playAudio function now checks isVoiceOutputEnabled)
+                if (aiMessageElement && audioData) { // Check if message was added and audio exists
+                     playAudio(audioData, aiMessageElement);
+                } else if (!audioData) {
+                    console.log("No audio content received from backend."); // Debug log
                 }
 
             } catch (error) {
-                loadingIndicator.style.display = 'none'; // Hide thinking indicator
-                console.error('Network or fetch error:', error);
-                addMessage("Connection error. Please check your network.", 'system-error');
+                loadingIndicator.style.display = 'none';
+                characterArea.classList.remove('is-thinking');
+                console.error('Network or fetch error:', error); // Debug log
+                showToast("Connection error. Please check your network or the server.", 'error', 5000);
             }
         }
 
         // --- Clear Chat ---
-        function clearChatVisuals() {
+        function clearChatVisuals(confirmFirst = true) {
+            if (confirmFirst && !confirm("Are you sure you want to clear the chat history? This cannot be undone.")) {
+                return;
+            }
              chatbox.innerHTML = ''; // Clear visual chat
-             chatbox.appendChild(loadingIndicator); // Re-add hidden indicator
              conversationHistory = []; // Clear client history mirror
-             stopCurrentAudio(); // Stop any playing audio
-             // TODO: Send request to backend to clear its history state if necessary
+             stopCurrentAudio();
+             // Call backend clear history
+             clearBackendHistory(); // <-- Added call
              console.log("Chat cleared.");
+             showToast("Chat cleared", "info", 1500);
              // Optionally add the greeting back
-             // const greeting = `Hi! I'm ${selectedCharacter.charAt(0).toUpperCase() + selectedCharacter.slice(1)}. How can I help?`;
-             // addMessage(greeting, 'ai', null);
+             const greeting = `Hi! I'm ${selectedCharacter.charAt(0).toUpperCase() + selectedCharacter.slice(1)}. How can I help?`;
+             addMessage(greeting, 'ai', null, true); // Add greeting without animation
+        }
+
+        // --- Function to call backend history clear ---
+        async function clearBackendHistory() {
+             try {
+                 console.log("Calling /clear_history..."); // Debug log
+                 const response = await fetch('/clear_history', { method: 'POST' });
+                 if (response.ok) {
+                     console.log("Backend history cleared successfully.");
+                 } else {
+                     console.error("Failed to clear backend history. Status:", response.status);
+                     showToast("Failed to sync history clear with server.", "error");
+                 }
+             } catch (error) {
+                 console.error("Error calling /clear_history:", error);
+                 showToast("Network error clearing server history.", "error");
+             }
         }
 
 
@@ -708,7 +1453,8 @@
 
         // User Input Enter Key
         userInput.addEventListener('keypress', function(event) {
-            if (event.key === 'Enter') {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
                 sendMessage();
             }
         });
@@ -717,16 +1463,24 @@
         voiceButton.addEventListener('click', () => {
             if (!recognition) return;
             if (isListening) {
-                recognition.stop();
+                console.log("User clicked stop listening."); // Debug log
+                recognition.stop(); // User manually stops listening
             } else {
+                console.log("User clicked start listening."); // Debug log
                 try {
+                    stopCurrentAudio(); // Stop AI speech if user starts talking
                     recognition.start();
                 } catch (e) {
                     console.error("Error starting recognition:", e);
-                    addMessage("Could not start listening.", 'system-error');
+                    if (e.name !== 'InvalidStateError') { // Ignore if already started
+                       showToast("Could not start listening. Try again.", 'error');
+                    }
+                    // Ensure UI is correct even if start fails
                     isListening = false;
                     voiceButton.classList.remove('is-listening');
-                    voiceButton.textContent = '🎤';
+                    micIcon.classList.remove('fa-stop');
+                    micIcon.classList.add('fa-microphone');
+                    voiceVisualization.classList.remove('active');
                 }
             }
         });
@@ -734,37 +1488,76 @@
         // Control Buttons
         switchCharButton.addEventListener('click', () => {
             stopCurrentAudio();
-            // Go back to selection screen
-            appContainer.style.display = 'none';
-            selectionScreen.style.display = 'flex';
-            // Reset state if needed
+            appContainer.classList.remove('visible'); // Fade out app
+            selectionScreen.style.display = 'flex'; // Show selection screen immediately
+            setTimeout(() => {
+                appContainer.style.display = 'none'; // Hide app after fade
+                selectionScreen.classList.remove('hidden'); // Fade in selection
+            }, 500);
             selectedCharacter = null;
-            // Backend history might need explicit clearing depending on session management
+            localStorage.removeItem('selectedCharacter');
+            clearBackendHistory(); // Also clear backend history on character switch
+        });
+
+        themeToggleButton.addEventListener('click', cycleTheme);
+        settingsButton.addEventListener('click', openSettings);
+        settingsCloseButton.addEventListener('click', closeSettings);
+        settingsPanel.addEventListener('click', (e) => { // Close if clicking outside content
+            if (e.target === settingsPanel) closeSettings();
         });
 
         muteButton.addEventListener('click', () => {
             isMuted = !isMuted;
             muteButton.classList.toggle('active', isMuted);
-            muteButton.textContent = isMuted ? '🔇' : '🔈';
-            muteButton.title = isMuted ? 'Unmute' : 'Mute';
+            muteButton.querySelector('i').className = isMuted ? 'fa-solid fa-volume-xmark' : 'fa-solid fa-volume-high';
+            muteButton.title = isMuted ? 'Unmute All Audio' : 'Mute All Audio';
+            localStorage.setItem('isMuted', isMuted);
             if (isMuted) {
-                stopCurrentAudio(); // Stop audio if muted
+                stopCurrentAudio();
             }
+            showToast(isMuted ? "All audio muted" : "Audio unmuted", "info", 1500);
             console.log("Muted:", isMuted);
         });
 
-        clearChatButton.addEventListener('click', () => {
-            if (confirm("Are you sure you want to clear the chat history?")) {
-                 clearChatVisuals();
-                 // Add backend call here if needed: fetch('/clear_history', { method: 'POST' });
+        voiceOutputToggleButton.addEventListener('click', () => {
+            isVoiceOutputEnabled = !isVoiceOutputEnabled;
+            voiceOutputToggleButton.classList.toggle('active', isVoiceOutputEnabled);
+            voiceOutputToggleButton.querySelector('i').className = isVoiceOutputEnabled ? 'fa-solid fa-comment-dots' : 'fa-solid fa-comment-slash';
+            voiceOutputToggleButton.title = isVoiceOutputEnabled ? 'Disable AI Voice Output' : 'Enable AI Voice Output';
+            localStorage.setItem('voiceOutputEnabled', isVoiceOutputEnabled);
+            if (!isVoiceOutputEnabled) {
+                stopCurrentAudio();
+                showToast("AI voice output disabled", "info", 1500);
+            } else {
+                showToast("AI voice output enabled", "info", 1500);
             }
+            console.log("AI Voice Output Enabled:", isVoiceOutputEnabled);
         });
 
-        // --- TODO: Add Three.js setup and animation sync logic ---
+        clearChatButton.addEventListener('click', () => {
+            clearChatVisuals(); // This now calls clearBackendHistory inside
+        });
+
+        // Help Icon & Modal Listeners
+        helpIcon.addEventListener('click', openHelp);
+        helpCloseButton.addEventListener('click', closeHelp);
+        helpModal.addEventListener('click', (e) => { // Close if clicking outside content
+            if (e.target === helpModal) closeHelp();
+        });
+
+
+        // --- Initial Check ---
+        if (selectedCharacter) {
+             initializeApp(selectedCharacter);
+        } else {
+            selectionScreen.style.display = 'flex';
+            selectionScreen.classList.remove('hidden');
+            appContainer.style.display = 'none';
+            appContainer.classList.remove('visible');
+        }
+
+        // --- TODO: Add 3D Model / Advanced Viz ---
         // function setupThreeJS(character) { ... }
-        // function playTalkingAnimation() { ... }
-        // function playIdleAnimation() { ... }
-        // function playThinkingAnimation() { ... }
 
     </script>
 
