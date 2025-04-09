@@ -376,7 +376,8 @@
 
         /* 5. Input Panel (Bottom) */
         #input-container { /* Added container for transcript */
-             padding: 15px 20px;
+             /* padding: top right bottom left; Added more bottom padding */
+             padding: 15px 20px 25px 20px;
              border-top: 1px solid var(--border-color);
              background-color: var(--bg-secondary);
         }
@@ -511,18 +512,21 @@
             color: var(--text-primary);
         }
         .modal-close-button {
-            position: absolute;
-            top: 15px; right: 15px;
+            position: absolute; /* Keep absolute positioning */
+            top: 10px; right: 10px; /* Slightly closer to corner */
             background: none; border: none;
-            font-size: 1.5em; /* Adjusted for FA */
+            font-size: 1.6em; /* Slightly larger icon */
             color: var(--text-secondary);
+            background-color: transparent; /* Explicitly transparent */
             cursor: pointer; line-height: 1;
-            transition: color 0.2s, transform 0.2s;
+            transition: color 0.2s, transform 0.2s, background-color 0.2s; /* Added background-color */
             padding: 5px; /* Easier to click */
+            border-radius: 50%; /* Make hover background circular */
         }
         .modal-close-button:hover {
             color: var(--text-primary);
-            transform: scale(1.1);
+            transform: scale(1.1) rotate(90deg); /* Add rotation on hover */
+            background-color: var(--bg-tertiary); /* Subtle background on hover */
         }
 
         /* Settings Specific */
@@ -571,13 +575,14 @@
             margin-bottom: 15px;
         }
         #help-modal .modal-content li {
-            margin-bottom: 10px;
+            margin-bottom: 12px; /* Increased spacing between items */
             display: flex;
             align-items: flex-start; /* Align icon with first line */
             color: var(--text-secondary);
+            line-height: 1.5; /* Ensure consistent line height within li */
         }
         #help-modal .modal-content li i {
-            color: var(--accent-primary);
+            color: var(--accent-primary); /* Make icon color stand out */
             margin-right: 12px;
             margin-top: 4px; /* Align icon nicely */
             width: 1.2em; /* Ensure consistent icon width */
@@ -626,22 +631,23 @@
         /* Help Icon - Moved to Top Left */
         #help-icon {
             position: absolute; /* Position relative to #app-container */
-            top: 15px; /* Adjust as needed */
-            left: 15px; /* Adjust as needed */
-            width: 35px; height: 35px; /* Slightly smaller */
-            background-color: var(--accent-secondary);
+            top: 15px;
+            left: 15px;
+            width: 40px; height: 40px; /* Slightly larger */
+            background-color: var(--accent-primary); /* Use primary accent */
             color: var(--bg-secondary);
             border: none; border-radius: 50%;
-            font-size: 1.2em; /* Adjusted for FA */
+            font-size: 1.3em; /* Slightly larger icon */
             cursor: pointer;
             display: flex; align-items: center; justify-content: center;
-            box-shadow: var(--shadow-md);
-            transition: background-color 0.2s, transform 0.2s;
+            box-shadow: var(--shadow-md); /* More prominent shadow */
+            transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s;
             z-index: 150; /* Above chat, below modal */
         }
         #help-icon:hover {
-            background-color: var(--accent-secondary-hover);
+            background-color: var(--accent-primary-hover); /* Darker primary on hover */
             transform: scale(1.1);
+            box-shadow: var(--shadow-lg); /* Larger shadow on hover */
         }
 
 
@@ -697,17 +703,19 @@
             }
             #chatbox { padding: 15px 10px; gap: 12px; }
             .message { max-width: 85%; padding: 10px 15px; }
-            #input-container { padding: 10px 15px; }
+            /* Adjusted mobile padding: top right bottom left; Added more bottom padding */
+            #input-container { padding: 10px 15px 80px 15px; }
             #userInput { padding: 10px 15px; font-size: 0.95em; }
             #sendButton, #voiceButton { width: 42px; height: 42px; font-size: 1.3em; } /* Slightly smaller input buttons */
 
             .character-card { padding: 25px; min-width: 150px; }
             .selection-container { gap: 20px; }
             #help-icon {
+                /* Keep mobile position bottom-right, check against input padding */
                 top: auto; /* Reset top */
-                bottom: 70px; /* Back to bottom on mobile */
+                bottom: 10px; /* Adjusted slightly higher to clear input padding more reliably */
                 left: auto; /* Reset left */
-                right: 15px; /* Position bottom-right on mobile */
+                right: 15px;
                 width: 35px; height: 35px; font-size: 1.3em;
             }
             .modal-content { width: 95%; padding: 25px; }
@@ -861,7 +869,7 @@
             <button id="helpCloseButton" class="modal-close-button" title="Close Help">
                 <i class="fa-solid fa-xmark"></i>
             </button>
-            <h2><i class="fa-solid fa-circle-info" style="margin-right: 8px; color: var(--accent-primary);"></i>Help & Tips</h2>
+            <h2><i class="fa-solid fa-circle-info" style="margin-right: 10px; color: var(--accent-primary);"></i>Help & Tips</h2>
             <p>Interact with your AI assistant using voice or text.</p>
             <ul>
                 <li><i class="fa-solid fa-microphone"></i>Click the <strong>Microphone</strong> button to start speaking. Click again (or wait for silence) to stop.</li>
