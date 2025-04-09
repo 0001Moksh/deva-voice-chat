@@ -47,39 +47,54 @@
             --glass-border: rgba(255, 255, 255, 0.3);
             --backdrop-blur: blur(8px);
         }
-
         [data-theme="dark"] {
-            --bg-primary: #1a1a1a;
-            --bg-secondary: #2c2c2c;
-            --bg-tertiary: #3a3a3a;
-            --text-primary: #e0e0e0;
-            --text-secondary: #a0a0a0;
+            /* --- Backgrounds --- */
+            --bg-primary: rgba(30, 30, 30, 0.45);
+            --bg-secondary: #242424;
+            --bg-tertiary: #2e2e2e;
+            --glass-bg: rgba(38, 38, 38, 0.6);
+        
+            /* --- Borders & Shadows --- */
+            --border-color: #444;
+            --glass-border: rgb(255, 244, 244);
+            --shadow-sm: 0 1px 3px rgb(255, 255, 255);
+            --shadow-md: 0 4px 10px rgb(255, 255, 255);
+            --shadow-lg: 0 8px 25px rgba(255, 253, 253, 0.91);
+        
+            /* --- Text Colors --- */
+            --text-primary: #e6e6e6;
+            --text-secondary: #a8a8a8;
             --text-user: #ffffff;
-            --text-ai: #e0e0e0;
-            --accent-primary: #0d6efd; /* Slightly brighter blue for dark */
+            --text-ai: #dcdcdc;
+        
+            /* --- Accent Colors --- */
+            --accent-primary: #0d6efd;
             --accent-primary-hover: #3b82f6;
             --accent-secondary: #adb5bd;
             --accent-secondary-hover: #ced4da;
+        
+            /* --- Chat Bubble Backgrounds --- */
             --bubble-user-bg: linear-gradient(135deg, #0d6efd, #3b82f6);
-            --bubble-ai-bg: #3a3a3a;
-            --border-color: #4a4a4a;
-            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
-            --shadow-md: 0 4px 10px rgba(0, 0, 0, 0.3);
-            --shadow-lg: 0 8px 25px rgba(0, 0, 0, 0.4);
+            --bubble-ai-bg: #303030;
+        
+            /* --- Status Colors --- */
             --success-bg: #0a3622;
             --success-text: #d1e7dd;
             --error-bg: #721c24;
             --error-text: #f8d7da;
             --info-bg: #055160;
             --info-text: #cff4fc;
+        
+            /* --- Effects / Animations --- */
             --listening-shadow: rgba(255, 80, 99, 0.6);
             --listening-border: rgba(255, 80, 99, 0.8);
             --thinking-glow: rgba(13, 110, 253, 0.4);
-            --deva-bg: #1d3c45; /* Darker cyan */
-            --devi-bg: #2e4031; /* Darker green */
-            --glass-bg: rgba(44, 44, 44, 0.6);
-            --glass-border: rgba(74, 74, 74, 0.3);
+        
+            /* --- Custom Characters / Themes --- */
+            --deva-bg: #123840; /* Subtle deep cyan */
+            --devi-bg: #5b0856; /* Rich violet */
         }
+        
 
         /* Basic Reset & Body */
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -196,88 +211,108 @@
             0%, 100% { transform: scale(1); opacity: 0.8; }
             50% { transform: scale(1.05); opacity: 1; }
         }
+        /* Voice Visualization - Modern Look with Bottom Margin */
+#voice-visualization {
+    position: absolute;
+    bottom: 150px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 6px;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    pointer-events: none;
+}
 
-        /* Placeholder for Voice Visualization */
-        #voice-visualization {
-            position: absolute;
-            bottom: 100px; /* Position below controls */
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80%;
-            height: 40px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 4px;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        #voice-visualization.active { opacity: 0.7; }
-        #voice-visualization span {
-            width: 5px;
-            height: 5px;
-            background-color: var(--accent-primary);
-            border-radius: 50%;
-            display: inline-block;
-            animation: voice-wave 1.2s infinite ease-in-out;
-        }
-        #voice-visualization span:nth-child(2) { animation-delay: 0.1s; }
-        #voice-visualization span:nth-child(3) { animation-delay: 0.2s; }
-        #voice-visualization span:nth-child(4) { animation-delay: 0.3s; }
-        #voice-visualization span:nth-child(5) { animation-delay: 0.4s; }
+#voice-visualization.active {
+    opacity: 0.9;
+}
 
-        @keyframes voice-wave {
-            0%, 100% { transform: scaleY(1); }
-            50% { transform: scaleY(3); }
-        }
-        /* End Voice Viz Placeholder */
+#voice-visualization span {
+    width: 6px;
+    height: 12px;
+    background-color: var(--accent-primary);
+    border-radius: 3px;
+    display: inline-block;
+    animation: voice-wave 1.4s infinite ease-in-out alternate;
+    transform-origin: bottom;
+}
 
+/* Staggered animation delays for wave effect */
+#voice-visualization span:nth-child(1) { animation-delay: 0s; }
+#voice-visualization span:nth-child(2) { animation-delay: 0.15s; }
+#voice-visualization span:nth-child(3) { animation-delay: 0.3s; }
+#voice-visualization span:nth-child(4) { animation-delay: 0.45s; }
+#voice-visualization span:nth-child(5) { animation-delay: 0.6s; }
 
-        #character-controls {
-            display: flex;
-            gap: 12px;
-            margin-top: auto;
-            width: 100%;
-            justify-content: center;
-            padding-top: 15px;
-            border-top: 1px solid var(--border-color);
-            flex-wrap: wrap; /* Allow buttons to wrap on smaller screens if needed */
-        }
-        .control-button {
-            background-color: transparent;
-            border: 1px solid var(--accent-secondary);
-            color: var(--accent-secondary);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            font-size: 1.1em; /* Adjusted for Font Awesome */
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-            position: relative; /* For tooltips */
-            flex-shrink: 0; /* Prevent shrinking */
-        }
-        .control-button:hover {
-            background-color: var(--accent-secondary);
-            color: var(--bg-secondary);
-            border-color: var(--accent-secondary);
-            transform: scale(1.05); /* Slightly subtler hover */
-        }
-         .control-button:active {
-             transform: scale(0.95); /* Click feedback */
-         }
-        .control-button.active {
-             background-color: var(--accent-primary);
-             color: var(--text-user);
-             border-color: var(--accent-primary);
-        }
-        .control-button.active:hover {
-             background-color: var(--accent-primary-hover);
-             border-color: var(--accent-primary-hover);
-             transform: scale(1.05);
-        }
+@keyframes voice-wave {
+    0%   { transform: scaleY(1); }
+    25%  { transform: scaleY(1.6); }
+    50%  { transform: scaleY(2.4); }
+    75%  { transform: scaleY(1.6); }
+    100% { transform: scaleY(1); }
+}
+#character-controls {
+    display: flex;
+    gap: 12px;
+    margin-top: auto;
+    width: 100%;
+    justify-content: center;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+    flex-wrap: wrap;
+    background-color: var(--bg-secondary-light); /* Optional subtle backdrop */
+    backdrop-filter: blur(4px); /* Modern soft blur effect */
+}
+
+.control-button {
+    background-color: transparent;
+    border: 1.5px solid var(--accent-secondary);
+    color: var(--accent-secondary);
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    font-size: 1.2em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.25s ease;
+    position: relative;
+    flex-shrink: 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* Light elevation */
+}
+
+.control-button:hover {
+    background-color: var(--accent-secondary);
+    color: var(--bg-primary);
+    transform: scale(1.1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.control-button:active {
+    transform: scale(0.95);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.control-button.active {
+    background-color: var(--accent-primary);
+    color: var(--text-user);
+    border-color: var(--accent-primary);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+}
+
+.control-button.active:hover {
+    background-color: var(--accent-primary-hover);
+    border-color: var(--accent-primary-hover);
+    transform: scale(1.1);
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.25);
+}
+
 
         /* 4. Chat Panel (Center) */
         #chat-container {
@@ -486,113 +521,197 @@
             transition: opacity 0.3s ease;
         }
         .modal-panel.visible { display: flex; opacity: 1; }
-
         .modal-content {
             background-color: var(--bg-secondary);
             color: var(--text-primary);
-            padding: 30px 40px;
-            border-radius: 15px;
+            padding: 32px 40px;
+            border-radius: 18px;
             box-shadow: var(--shadow-lg);
             width: 90%;
-            max-width: 500px;
+            max-width: 520px;
             position: relative;
-            transform: scale(0.95) translateY(10px); /* Start slightly down */
-            transition: transform 0.3s ease, opacity 0.3s ease;
-            opacity: 0; /* Start hidden for transition */
+            transform: scale(0.95) translateY(12px);
+            transition: transform 0.35s ease, opacity 0.35s ease;
+            opacity: 0;
         }
+        
         .modal-panel.visible .modal-content {
             transform: scale(1) translateY(0);
             opacity: 1;
         }
-
+        
         .modal-content h2 {
-            margin-bottom: 25px;
+            margin-bottom: 24px;
             font-weight: 600;
             text-align: center;
+            font-size: 1.4em;
             color: var(--text-primary);
         }
+        
+        /* Close Button */
         .modal-close-button {
-            position: absolute; /* Keep absolute positioning */
-            top: 10px; right: 10px; /* Slightly closer to corner */
-            background: none; border: none;
-            font-size: 1.6em; /* Slightly larger icon */
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: none;
+            border: none;
+            font-size: 1.7em;
             color: var(--text-secondary);
-            background-color: transparent; /* Explicitly transparent */
-            cursor: pointer; line-height: 1;
-            transition: color 0.2s, transform 0.2s, background-color 0.2s; /* Added background-color */
-            padding: 5px; /* Easier to click */
-            border-radius: 50%; /* Make hover background circular */
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 50%;
+            transition: color 0.2s, transform 0.2s, background-color 0.2s;
         }
+        
         .modal-close-button:hover {
             color: var(--text-primary);
-            transform: scale(1.1) rotate(90deg); /* Add rotation on hover */
-            background-color: var(--bg-tertiary); /* Subtle background on hover */
+            transform: scale(1.15) rotate(90deg);
+            background-color: var(--bg-tertiary);
         }
-
-        /* Settings Specific */
-        .setting-item { margin-bottom: 20px; }
+        
+        /* ========================== */
+        /* Settings Panel Components  */
+        /* ========================== */
+        
+        .setting-item {
+            margin-bottom: 22px;
+        }
+        
         .setting-item label {
             display: block;
             margin-bottom: 8px;
             font-weight: 500;
             color: var(--text-secondary);
-            font-size: 0.9em;
+            font-size: 0.95em;
         }
+        
+        /* Input, Select, and Custom Toggle */
         .setting-item input[type="range"],
         .setting-item select,
-        .setting-item .toggle-switch { /* Style inputs/selects */
+        .setting-item .toggle-switch {
             width: 100%;
             padding: 8px 12px;
             border: 1px solid var(--border-color);
-            border-radius: 8px;
+            border-radius: 10px;
             background-color: var(--bg-primary);
             color: var(--text-primary);
             font-size: 1em;
+            transition: border-color 0.2s, background-color 0.2s;
         }
-         .setting-item input[type="range"] { padding: 0; height: 8px; cursor: pointer; } /* Slider specific */
-         .setting-item select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%236c757d'%3E%3Cpath fill-rule='evenodd' d='M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z' clip-rule='evenodd' /%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; background-size: 16px; }
-         [data-theme="dark"] .setting-item select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23a0a0a0'%3E%3Cpath fill-rule='evenodd' d='M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z' clip-rule='evenodd' /%3E%3C/svg%3E"); }
-
-        /* Basic Toggle Switch */
-        .toggle-switch { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; }
-        .toggle-switch span { font-weight: normal; }
-        .switch { position: relative; display: inline-block; width: 44px; height: 24px; flex-shrink: 0; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--border-color); transition: .4s; border-radius: 24px; }
-        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--accent-primary); }
-        input:checked + .slider:before { transform: translateX(20px); }
-
-        /* Help Modal Specific */
+        
+        /* Range specific */
+        .setting-item input[type="range"] {
+            padding: 0;
+            height: 8px;
+            cursor: pointer;
+        }
+        
+        /* Select dropdown styles */
+        .setting-item select {
+            appearance: none;
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 16px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%236c757d' viewBox='0 0 16 16'%3E%3Cpath d='M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 0 1 1.06 1.06L8.53 10a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06z'/%3E%3C/svg%3E");
+        }
+        
+        [data-theme="dark"] .setting-item select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23a0a0a0' viewBox='0 0 16 16'%3E%3Cpath d='M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 0 1 1.06 1.06L8.53 10a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06z'/%3E%3C/svg%3E");
+        }
+        
+        /* Toggle Switch Component */
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+        }
+        
+        .toggle-switch span {
+            font-weight: normal;
+        }
+        
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+        
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: var(--border-color);
+            transition: background-color 0.3s;
+            border-radius: 24px;
+            cursor: pointer;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: transform 0.3s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: var(--accent-primary);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+        
+        /* ======================= */
+        /* Help Modal Specific     */
+        /* ======================= */
+        
         #help-modal .modal-content p {
-            margin-bottom: 15px;
+            margin-bottom: 16px;
             line-height: 1.6;
             color: var(--text-secondary);
         }
+        
         #help-modal .modal-content ul {
-            list-style: none; /* Remove default bullets */
+            list-style: none;
             padding-left: 0;
-            margin-bottom: 15px;
+            margin-bottom: 16px;
         }
+        
         #help-modal .modal-content li {
-            margin-bottom: 12px; /* Increased spacing between items */
+            margin-bottom: 12px;
             display: flex;
-            align-items: flex-start; /* Align icon with first line */
+            align-items: flex-start;
             color: var(--text-secondary);
-            line-height: 1.5; /* Ensure consistent line height within li */
+            line-height: 1.5;
         }
+        
         #help-modal .modal-content li i {
-            color: var(--accent-primary); /* Make icon color stand out */
+            color: var(--accent-primary);
             margin-right: 12px;
-            margin-top: 4px; /* Align icon nicely */
-            width: 1.2em; /* Ensure consistent icon width */
+            margin-top: 4px;
+            width: 1.2em;
             text-align: center;
+            flex-shrink: 0;
         }
+        
         #help-modal .modal-content strong {
             color: var(--text-primary);
             font-weight: 500;
         }
-
+        
 
         /* Toast Notifications */
         #toast-container {
@@ -628,22 +747,39 @@
         .toast.info { background-color: var(--info-bg); color: var(--info-text); }
 
 
-        /* Help Icon - Moved to Top Left */
-        #help-icon {
-            position: absolute; /* Position relative to #app-container */
-            top: 15px;
-            left: 15px;
-            width: 40px; height: 40px; /* Slightly larger */
-            background-color: var(--accent-primary); /* Use primary accent */
-            color: var(--bg-secondary);
-            border: none; border-radius: 50%;
-            font-size: 1.3em; /* Slightly larger icon */
-            cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: var(--shadow-md); /* More prominent shadow */
-            transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s;
-            z-index: 150; /* Above chat, below modal */
-        }
+        /* Help Icon - Top Left, Enhanced Design */
+#help-icon {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    width: 42px;
+    height: 42px;
+    background-color: var(--accent-primary);
+    color: #ffffff; /* Bright white icon */
+    border: none;
+    border-radius: 50%;
+    font-size: 1.35em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+    transition: transform 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease;
+    z-index: 150;
+}
+
+/* Optional: Hover/Active Enhancements */
+#help-icon:hover {
+    background-color: var(--accent-primary-hover);
+    transform: scale(1.1);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+#help-icon:active {
+    transform: scale(0.95);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
         #help-icon:hover {
             background-color: var(--accent-primary-hover); /* Darker primary on hover */
             transform: scale(1.1);
@@ -757,6 +893,7 @@
             </div>
             <!-- Voice Visualization Placeholder -->
             <div id="voice-visualization">
+                <span></span><span></span><span></span><span></span><span></span>
                 <span></span><span></span><span></span><span></span><span></span>
             </div>
             <!-- MODIFIED character-controls with Font Awesome -->
@@ -1020,22 +1157,34 @@
             showToast('Speech Recognition is not supported in your browser.', 'info');
         }
 
-        // --- Theme Management ---
-        function applyTheme(theme) {
-            const html = document.documentElement;
-            const themeIcon = themeToggleButton.querySelector('i');
-            if (theme === 'auto') {
-                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                html.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
-                // Keep the auto icon, but update title
-                themeIcon.className = 'fa-solid fa-circle-half-stroke';
-                themeToggleButton.title = `Toggle Theme (Auto: ${prefersDark ? 'Dark' : 'Light'})`;
-            } else {
-                html.setAttribute('data-theme', theme);
-                themeIcon.className = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon'; // Sun for dark, Moon for light
-                themeToggleButton.title = `Toggle Theme (Current: ${theme})`;
-            }
-        }
+// --- Theme Management: Light <-> Dark Only ---
+const themes = ['light', 'dark'];
+let currentThemeIndex = 0;
+
+function applyTheme(theme) {
+    const html = document.documentElement;
+    const themeIcon = themeToggleButton.querySelector('i');
+
+    html.setAttribute('data-theme', theme);
+    themeIcon.className = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+    themeToggleButton.title = `Toggle Theme (Current: ${theme.charAt(0).toUpperCase() + theme.slice(1)})`;
+
+    localStorage.setItem('preferredTheme', theme);
+}
+
+themeToggleButton.addEventListener('click', () => {
+    currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+    const nextTheme = themes[currentThemeIndex];
+    applyTheme(nextTheme);
+});
+
+// On page load, restore theme
+document.addEventListener('DOMContentLoaded', () => {
+    const saved = localStorage.getItem('preferredTheme') || 'light';
+    currentThemeIndex = themes.indexOf(saved);
+    applyTheme(saved);
+});
+
 
         function cycleTheme() {
             const html = document.documentElement;
@@ -1180,8 +1329,8 @@
 
             // Clear previous chat & add greeting
             clearChatVisuals(false); // Don't show confirmation
-            const greeting = `Hi! I'm ${character.charAt(0).toUpperCase() + character.slice(1)}. How can I help you today?`;
-            addMessage(greeting, 'ai', null, true); // Add greeting without animation initially
+            //const greeting = `Hi! I'm ${character.charAt(0).toUpperCase() + character.slice(1)}. How can I help you today?`;
+            //addMessage(greeting, 'ai', null, true); // Add greeting without animation initially
 
             loadSettings(); // Load settings relevant to the character
             checkOnboarding(); // Check if first time user
