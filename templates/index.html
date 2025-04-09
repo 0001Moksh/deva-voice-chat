@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deva & Devi AI Assistant</title>
+    <style>
+        :root {
+            --user-bubble-bg: #007bff; /* Blue for user */
+            --ai-bubble-bg: #e9e9eb;   /* Light gray for AI */
+            --text-color-user: white;
+            --text-color-ai: black;
+            --background-color: #f4f4f4;
+            --container-bg: #ffffff;
+            --border-color: #ccc;
+            --button-bg: #007bff;
+            --button-hover-bg: #0056b3;
+            --button-text: white;
+            --listening-bg: #dc3545;
+            --listening-shadow: rgba(220, 53, 69, 0.7);
+            --timestamp-color: #666;
+            --icon-color: #555;
+            --deva-bg: #e0f7fa; /* Light cyan/tech */
+            --devi-bg: #e8f5e9; /* Light green/nature */
+        }
+
+        /* Basic Reset & Body */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex; /* Needed for landing screen centering */
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: var(--background-color);
+            color: var(--text-color-ai);
+            overflow: hidden; /* Prevent body scroll */
+        }
+
+        /* 1. Landing / Character Selection Screen */
+        #selection-screen {
+            display: flex; /* Initially shown */
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent overlay */
+            z-index: 100;
+            padding: 20px;
+            backdrop-filter: blur(5px);
+        }
+        #selection-screen h1 {
+            color: white;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .selection-container {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+            justify-content: center;
+        }
+        .character-card {
+            background-color: var(--container-bg);
+            padding: 30px 40px;
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            min-width: 180px;
+        }
+        .character-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+        .character-card .icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+        }
+        .character-card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        /* 2. Main App Layout (Hidden Initially) */
+        #app-container {
+            display: none; /* Initially hidden */
+            width: 100%;
+            height: 100%;
+            max-width: 1200px; /* Max width for larger screens */
+            margin: 0 auto;
+            background-color: var(--container-bg);
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            border-radius: 8px; /* Optional rounded corners */
+            display: flex;
+            flex-direction: row; /* Default layout */
+            overflow: hidden; /* Contain children */
+        }
+
+        /* 3. Character Panel (Left) */
+        #character-area {
+            flex: 0 0 300px; /* Fixed width, don't grow or shrink */
+            background-color: #f0f0f0; /* Placeholder background */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between; /* Push controls down */
+            padding: 20px;
+            border-right: 1px solid var(--border-color);
+            position: relative; /* For potential overlays */
+            transition: background-color 0.5s ease; /* Smooth bg change */
+        }
+        #character-area.deva-bg { background-color: var(--deva-bg); }
+        #character-area.devi-bg { background-color: var(--devi-bg); }
+
+        #character-model-area {
+            width: 100%;
+            height: 70%; /* Adjust as needed */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            color: var(--icon-color);
+            /* Placeholder text/icon */
+        }
+        #character-model-area::before {
+             content: '👤'; /* Default placeholder */
+        }
+        #character-area.deva-bg #character-model-area::before { content: '👦'; }
+        #character-area.devi-bg #character-model-area::before { content: '👧'; }
+
+        #character-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: auto; /* Push to bottom */
+        }
+        .control-button {
+            background: none;
+            border: 1px solid var(--icon-color);
+            color: var(--icon-color);
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            font-size: 1.1em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .control-button:hover {
+            background-color: var(--icon-color);
+            color: var(--container-bg);
+        }
+        .control-button.active {
+             background-color: var(--button-bg);
+             color: var(--button-text);
+             border-color: var(--button-bg);
+        }
+
+
+        /* 4. Chat Panel (Center) */
+        #chat-container {
+            flex-grow: 1; /* Takes up remaining space */
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Prevent content overflow */
+            background-color: var(--background-color); /* Match body */
+        }
+
+        #chatbox {
+            flex-grow: 1;
+            padding: 20px 15px;
+            overflow-y: auto; /* Enable scrolling */
+            display: flex;
+            flex-direction: column;
+            gap: 10px; /* Space between messages */
+        }
+
+        /* Chat Bubbles */
+        .message {
+            padding: 10px 15px;
+            border-radius: 18px;
+            max-width: 75%;
+            word-wrap: break-word;
+            position: relative;
+            opacity: 0; /* Start hidden for animation */
+            transform: translateY(10px); /* Start slightly lower */
+            animation: fadeInSlideUp 0.3s ease-out forwards;
+        }
+        @keyframes fadeInSlideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message .timestamp {
+            font-size: 0.7em;
+            color: var(--timestamp-color);
+            display: block;
+            margin-top: 5px;
+            text-align: right; /* Align timestamp right */
+        }
+
+        .user-message {
+            background-color: var(--user-bubble-bg);
+            color: var(--text-color-user);
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+        }
+        .user-message .timestamp { color: rgba(255, 255, 255, 0.7); }
+
+        .ai-message {
+            background-color: var(--ai-bubble-bg);
+            color: var(--text-color-ai);
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+        }
+        .ai-message .timestamp { color: var(--timestamp-color); }
+
+        /* AI Message Controls (Play/Interrupt) */
+        .ai-controls {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+            padding-top: 5px;
+            border-top: 1px solid rgba(0,0,0,0.05); /* Subtle separator */
+        }
+        .ai-control-button {
+            background: none;
+            border: none;
+            color: var(--icon-color);
+            cursor: pointer;
+            font-size: 0.9em;
+            padding: 2px;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        .ai-control-button:hover { opacity: 1; }
+        .interrupt-button { display: none; } /* Hide interrupt initially */
+        .ai-message.is-speaking .interrupt-button { display: inline-block; } /* Show when speaking */
+
+
+        /* 5. Input Panel (Bottom) */
+        #input-area {
+            display: flex;
+            padding: 15px;
+            border-top: 1px solid var(--border-color);
+            background-color: var(--container-bg);
+            align-items: center;
+            gap: 10px;
+        }
+
+        #userInput {
+            flex-grow: 1;
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 20px; /* Rounded input */
+            margin-right: 5px;
+            font-size: 1em;
+        }
+        #userInput:focus { outline: none; border-color: var(--button-bg); }
+
+        #sendButton, #voiceButton {
+            padding: 10px;
+            width: 45px; /* Square-ish */
+            height: 45px;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            border: none;
+            border-radius: 50%; /* Circular buttons */
+            cursor: pointer;
+            font-size: 1.4em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+            flex-shrink: 0; /* Prevent shrinking */
+        }
+        #sendButton:hover, #voiceButton:hover { background-color: var(--button-hover-bg); }
+
+        #voiceButton.is-listening {
+             background-color: var(--listening-bg);
+             animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 var(--listening-shadow); }
+            70% { box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+        }
+
+        /* Loading Indicator */
+        #loading-indicator {
+            display: none; /* Hidden by default */
+            margin: 10px auto; /* Center in chatbox if needed */
+            font-style: italic;
+            color: var(--timestamp-color);
+            /* Basic dots animation */
+            text-align: center;
+        }
+         #loading-indicator span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: var(--icon-color);
+            border-radius: 50%;
+            margin: 0 2px;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+        #loading-indicator span:nth-child(1) { animation-delay: -0.32s; }
+        #loading-indicator span:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1.0); }
+        }
+
+
+        /* 6. Responsiveness */
+        @media (max-width: 768px) {
+            #app-container {
+                flex-direction: column; /* Stack panels vertically */
+                height: 100%; /* Ensure it takes full viewport height */
+                border-radius: 0;
+            }
+            #character-area {
+                flex: 0 0 150px; /* Reduce height */
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+                padding: 10px;
+                flex-direction: row; /* Character and controls side-by-side */
+                justify-content: space-around; /* Space out elements */
+            }
+            #character-model-area {
+                height: 100%;
+                width: auto;
+                flex-grow: 1; /* Take available space */
+                font-size: 3em; /* Adjust icon size */
+            }
+             #character-controls {
+                 margin-top: 0;
+                 flex-direction: column; /* Stack controls vertically */
+                 gap: 5px;
+             }
+             .control-button { width: 30px; height: 30px; font-size: 1em; }
+
+            #chat-container {
+                flex-grow: 1; /* Take remaining height */
+            }
+            #chatbox { padding: 10px; }
+            .message { max-width: 85%; }
+            #input-area { padding: 10px; }
+            #userInput { padding: 8px 12px; }
+            #sendButton, #voiceButton { width: 40px; height: 40px; font-size: 1.2em; }
+
+            /* Hide selection text on small screens if needed */
+            .character-card h2 { font-size: 1.2rem; }
+            .character-card .icon { font-size: 3rem; }
+            .character-card { padding: 20px; min-width: 140px; }
+            .selection-container { gap: 15px; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- 1. Landing / Character Selection Screen -->
+    <div id="selection-screen">
+        <h1>Choose your Assistant</h1>
+        <div class="selection-container">
+            <div class="character-card" data-character="deva">
+                <div class="icon">👦</div>
+                <h2>Deva</h2>
+            </div>
+            <div class="character-card" data-character="devi">
+                <div class="icon">👧</div>
+                <h2>Devi</h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Main App Container (Initially Hidden) -->
+    <div id="app-container">
+
+        <!-- 3. Character Panel (Left) -->
+        <div id="character-area">
+            <div id="character-model-area">
+                <!-- 3D Model will be loaded here by Three.js -->
+                <!-- Placeholder text/icon set by CSS -->
+            </div>
+            <div id="character-controls">
+                 <button id="switchCharButton" class="control-button" title="Switch Character">🔄</button>
+                 <button id="muteButton" class="control-button" title="Mute/Unmute">🔈</button>
+                 <button id="clearChatButton" class="control-button" title="Clear Chat">🧹</button>
+                 <!-- Add more controls like dark mode toggle if needed -->
+            </div>
+        </div>
+
+        <!-- 4. Chat Panel (Center) -->
+        <div id="chat-container">
+            <div id="chatbox">
+                <!-- Initial Greeting will be added by JS -->
+                <!-- Messages will be appended here -->
+                 <div id="loading-indicator">
+                    <span></span><span></span><span></span>
+                 </div>
+            </div>
+
+            <!-- 5. Input Panel (Bottom) -->
+            <div id="input-area">
+                <input type="text" id="userInput" placeholder="Type or click the mic...">
+                <button id="sendButton" title="Send Message">➤</button>
+                <button id="voiceButton" title="Start/Stop Listening">🎤</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- DOM Elements ---
+        const selectionScreen = document.getElementById('selection-screen');
+        const appContainer = document.getElementById('app-container');
+        const characterCards = document.querySelectorAll('.character-card');
+        const characterArea = document.getElementById('character-area');
+        // const characterModelArea = document.getElementById('character-model-area'); // For Three.js later
+        const chatbox = document.getElementById('chatbox');
+        const userInput = document.getElementById('userInput');
+        const sendButton = document.getElementById('sendButton');
+        const voiceButton = document.getElementById('voiceButton');
+        const switchCharButton = document.getElementById('switchCharButton');
+        const muteButton = document.getElementById('muteButton');
+        const clearChatButton = document.getElementById('clearChatButton');
+        const loadingIndicator = document.getElementById('loading-indicator');
+
+        // --- State Variables ---
+        let selectedCharacter = null; // 'deva' or 'devi'
+        let isMuted = false;
+        let currentAudio = null; // Holds the currently playing Audio object
+        let currentInterruptButton = null; // Holds the interrupt button of the playing audio
+        let conversationHistory = []; // Optional: Client-side history mirror
+
+        // --- Speech Recognition Setup (Keep previous logic) ---
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let recognition;
+        let isListening = false;
+
+        if (SpeechRecognition) {
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.lang = 'en-IN';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            recognition.onstart = () => {
+                isListening = true;
+                voiceButton.classList.add('is-listening');
+                voiceButton.textContent = '👂';
+                console.log('Voice recognition started...');
+            };
+            recognition.onresult = (event) => {
+                userInput.value = event.results[0][0].transcript;
+                // Maybe automatically send after short pause? For now, user clicks send.
+            };
+            recognition.onerror = (event) => {
+                console.error('Speech recognition error:', event.error);
+                let errorMsg = 'Speech recognition error: ' + event.error;
+                 if (event.error === 'no-speech') errorMsg = "Didn't hear anything.";
+                 else if (event.error === 'audio-capture') errorMsg = "Mic problem.";
+                 else if (event.error === 'not-allowed') errorMsg = "Mic permission denied.";
+                addMessage(errorMsg, 'system-error'); // Use a different style for system errors
+            };
+            recognition.onend = () => {
+                isListening = false;
+                voiceButton.classList.remove('is-listening');
+                voiceButton.textContent = '🎤';
+                console.log('Voice recognition ended.');
+            };
+        } else {
+            console.warn('Speech Recognition not supported.');
+            voiceButton.disabled = true;
+            voiceButton.textContent = '🚫';
+        }
+
+        // --- Initialization ---
+        function initializeApp(character) {
+            selectedCharacter = character;
+            console.log(`Character selected: ${selectedCharacter}`);
+
+            // Update UI based on character
+            characterArea.classList.remove('deva-bg', 'devi-bg');
+            characterArea.classList.add(character === 'deva' ? 'deva-bg' : 'devi-bg');
+            // TODO: Load actual 3D model via Three.js here based on character
+
+            // Hide selection, show app
+            selectionScreen.style.display = 'none';
+            appContainer.style.display = 'flex';
+
+            // Add initial greeting
+            const greeting = `Hi! I'm ${character.charAt(0).toUpperCase() + character.slice(1)}. How can I help you today, Sir?`;
+            addMessage(greeting, 'ai', null); // No audio for initial greeting
+
+            // Clear any previous chat history visually (and potentially on backend if needed)
+            clearChatVisuals();
+            // TODO: Inform backend to start new session or clear history if necessary
+        }
+
+        // --- Add Message Function (Enhanced) ---
+        function addMessage(text, sender, audioBase64 = null) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', `${sender}-message`);
+
+            const contentDiv = document.createElement('div');
+            contentDiv.textContent = text;
+            messageDiv.appendChild(contentDiv);
+
+            // Timestamp
+            const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const timestampSpan = document.createElement('span');
+            timestampSpan.classList.add('timestamp');
+            timestampSpan.textContent = timestamp;
+            messageDiv.appendChild(timestampSpan);
+
+            // AI Controls (Play/Interrupt)
+            if (sender === 'ai' && audioBase64) {
+                messageDiv.dataset.audio = audioBase64; // Store audio data
+
+                const controlsDiv = document.createElement('div');
+                controlsDiv.classList.add('ai-controls');
+
+                // Play Button
+                const playButton = document.createElement('button');
+                playButton.classList.add('ai-control-button', 'play-button');
+                playButton.textContent = '🔊 Play'; // Use icon later: '▶️' or SVG
+                playButton.title = 'Play audio again';
+                playButton.onclick = () => {
+                    stopCurrentAudio(); // Stop any other audio first
+                    playAudio(audioBase64, messageDiv);
+                };
+                controlsDiv.appendChild(playButton);
+
+                // Interrupt Button (initially hidden by CSS)
+                const interruptBtn = document.createElement('button');
+                interruptBtn.classList.add('ai-control-button', 'interrupt-button');
+                interruptBtn.textContent = '⏹️ Stop'; // Use icon later
+                interruptBtn.title = 'Interrupt speech';
+                interruptBtn.onclick = () => {
+                    stopCurrentAudio();
+                    // TODO: Add "Clarification Mode" logic if needed
+                    console.log("Audio interrupted by user.");
+                };
+                controlsDiv.appendChild(interruptBtn);
+
+                messageDiv.appendChild(controlsDiv);
+            } else if (sender === 'system-error') {
+                 messageDiv.style.backgroundColor = '#f8d7da'; // Error styling
+                 messageDiv.style.color = '#721c24';
+                 messageDiv.style.alignSelf = 'center'; // Center system messages
+                 messageDiv.style.maxWidth = '90%';
+            }
+
+            chatbox.appendChild(messageDiv);
+            // Scroll to bottom (wait for animation frame for accuracy)
+            requestAnimationFrame(() => {
+                 chatbox.scrollTop = chatbox.scrollHeight;
+            });
+
+            // Optional: Add to client-side history mirror
+            conversationHistory.push({ role: sender, content: text, timestamp: new Date() });
+        }
+
+        // --- Audio Playback ---
+        function playAudio(base64Audio, messageElement) {
+            if (!base64Audio || isMuted) return;
+
+            stopCurrentAudio(); // Ensure only one audio plays
+
+            try {
+                const audioSource = `data:audio/mpeg;base64,${base64Audio}`;
+                const audio = new Audio(audioSource);
+                currentAudio = audio; // Store reference
+                currentInterruptButton = messageElement.querySelector('.interrupt-button');
+
+                audio.onplay = () => {
+                    messageElement.classList.add('is-speaking');
+                };
+                audio.onended = () => {
+                    stopCurrentAudio(); // Clean up state
+                };
+                audio.onerror = (e) => {
+                    console.error("Error playing audio:", e);
+                    addMessage("Error playing audio.", 'system-error');
+                    stopCurrentAudio(); // Clean up state
+                };
+
+                audio.play().catch(e => {
+                    console.error("Audio play failed:", e);
+                    // Often due to browser restrictions on autoplay
+                    if (e.name === 'NotAllowedError') {
+                         addMessage("(Browser blocked audio autoplay. Click Play to listen)", 'system-error');
+                    } else {
+                         addMessage("Could not play audio.", 'system-error');
+                    }
+                    stopCurrentAudio(); // Clean up state
+                });
+
+            } catch (e) {
+                console.error("Error creating audio object:", e);
+                addMessage("Failed to process audio.", 'system-error');
+                stopCurrentAudio(); // Clean up state
+            }
+        }
+
+        // --- Stop Current Audio ---
+        function stopCurrentAudio() {
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0; // Reset playback position
+                const speakingMessage = document.querySelector('.ai-message.is-speaking');
+                if(speakingMessage) speakingMessage.classList.remove('is-speaking');
+            }
+            currentAudio = null;
+            currentInterruptButton = null;
+        }
+
+        // --- Send Message to Backend ---
+        async function sendMessage() {
+            const userText = userInput.value.trim();
+            if (!userText) return;
+
+            stopCurrentAudio(); // Stop AI if it's talking
+            addMessage(userText, 'user');
+            userInput.value = '';
+            loadingIndicator.style.display = 'block'; // Show thinking indicator
+            chatbox.scrollTop = chatbox.scrollHeight; // Scroll down to show indicator
+
+            try {
+                const response = await fetch('/chat', { // Ensure this matches your Flask route
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    // Send character info if backend needs it for voice/personality
+                    body: JSON.stringify({ query: userText, character: selectedCharacter }),
+                });
+
+                loadingIndicator.style.display = 'none'; // Hide thinking indicator
+
+                if (!response.ok) {
+                    let errorMsg = `Error: ${response.statusText}`;
+                    try {
+                        const errorData = await response.json();
+                        errorMsg = errorData.response || errorData.error || errorMsg;
+                    } catch (e) { /* Ignore */ }
+                    addMessage(errorMsg, 'system-error');
+                    console.error('Error sending message:', errorMsg);
+                    return;
+                }
+
+                const data = await response.json();
+                const aiText = data.response;
+                const audioData = data.audio_content;
+
+                // Add AI response message
+                const aiMessageElement = addMessage(aiText, 'ai', audioData);
+
+                // Play AI's voice response if not muted
+                if (!isMuted && audioData) {
+                     // Find the message element just added to pass to playAudio
+                     const lastMessage = chatbox.lastElementChild;
+                     if (lastMessage && lastMessage.classList.contains('ai-message')) {
+                         playAudio(audioData, lastMessage);
+                     }
+                }
+
+            } catch (error) {
+                loadingIndicator.style.display = 'none'; // Hide thinking indicator
+                console.error('Network or fetch error:', error);
+                addMessage("Connection error. Please check your network.", 'system-error');
+            }
+        }
+
+        // --- Clear Chat ---
+        function clearChatVisuals() {
+             chatbox.innerHTML = ''; // Clear visual chat
+             chatbox.appendChild(loadingIndicator); // Re-add hidden indicator
+             conversationHistory = []; // Clear client history mirror
+             stopCurrentAudio(); // Stop any playing audio
+             // TODO: Send request to backend to clear its history state if necessary
+             console.log("Chat cleared.");
+             // Optionally add the greeting back
+             // const greeting = `Hi! I'm ${selectedCharacter.charAt(0).toUpperCase() + selectedCharacter.slice(1)}. How can I help?`;
+             // addMessage(greeting, 'ai', null);
+        }
+
+
+        // --- Event Listeners ---
+
+        // Character Selection
+        characterCards.forEach(card => {
+            card.addEventListener('click', () => {
+                initializeApp(card.dataset.character);
+            });
+        });
+
+        // Send Button
+        sendButton.addEventListener('click', sendMessage);
+
+        // User Input Enter Key
+        userInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Voice Input Button
+        voiceButton.addEventListener('click', () => {
+            if (!recognition) return;
+            if (isListening) {
+                recognition.stop();
+            } else {
+                try {
+                    recognition.start();
+                } catch (e) {
+                    console.error("Error starting recognition:", e);
+                    addMessage("Could not start listening.", 'system-error');
+                    isListening = false;
+                    voiceButton.classList.remove('is-listening');
+                    voiceButton.textContent = '🎤';
+                }
+            }
+        });
+
+        // Control Buttons
+        switchCharButton.addEventListener('click', () => {
+            stopCurrentAudio();
+            // Go back to selection screen
+            appContainer.style.display = 'none';
+            selectionScreen.style.display = 'flex';
+            // Reset state if needed
+            selectedCharacter = null;
+            // Backend history might need explicit clearing depending on session management
+        });
+
+        muteButton.addEventListener('click', () => {
+            isMuted = !isMuted;
+            muteButton.classList.toggle('active', isMuted);
+            muteButton.textContent = isMuted ? '🔇' : '🔈';
+            muteButton.title = isMuted ? 'Unmute' : 'Mute';
+            if (isMuted) {
+                stopCurrentAudio(); // Stop audio if muted
+            }
+            console.log("Muted:", isMuted);
+        });
+
+        clearChatButton.addEventListener('click', () => {
+            if (confirm("Are you sure you want to clear the chat history?")) {
+                 clearChatVisuals();
+                 // Add backend call here if needed: fetch('/clear_history', { method: 'POST' });
+            }
+        });
+
+        // --- TODO: Add Three.js setup and animation sync logic ---
+        // function setupThreeJS(character) { ... }
+        // function playTalkingAnimation() { ... }
+        // function playIdleAnimation() { ... }
+        // function playThinkingAnimation() { ... }
+
+    </script>
+
+</body>
+</html>
